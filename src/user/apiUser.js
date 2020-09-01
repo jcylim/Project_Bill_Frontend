@@ -1,11 +1,27 @@
-export const read = (userId, token) => {
-    return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+export const getBasicCompanyInfo = companyId => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/basic`, {
         method: "GET",
+        // headers: {
+        //     Accept: "application/json",
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${token}` 
+        // }
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};
+
+export const addNewUser = (companyId, token, user) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/user/new`, {
+        method: "POST",
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}` 
-        }
+        },
+        body: JSON.stringify(user)
     })
     .then(res => {
         return res.json();
@@ -13,18 +29,8 @@ export const read = (userId, token) => {
     .catch(err => console.log(err));
 };
 
-export const list = () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/users`, {
-        method: "GET"
-    })
-    .then(res => {
-        return res.json();
-    })
-    .catch(err => console.log(err));
-};
-
-export const remove = (userId, token) => {
-    return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+export const removeUser = (companyId, userId, token) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/user/${userId}`, {
         method: "DELETE",
         headers: {
             Accept: "application/json",
@@ -38,9 +44,38 @@ export const remove = (userId, token) => {
     .catch(err => console.log(err));
 };
 
-export const update = (userId, token, userData) => {
+export const read = (companyId, userId, token) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/user/${userId}`, {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}` 
+        }
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};
+
+export const listUsers = (companyId, token) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/users`, {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};
+
+export const update = (companyId, userId, token, userData) => {
     console.log('updated user data: ', userData);
-    return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/user/${userId}`, {
         method: "PUT",
         headers: {
             Accept: "application/json",
@@ -90,21 +125,6 @@ export const unfollow = (userId, token, unfollowId) => {
             Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({userId, unfollowId})
-    })
-    .then(res => {
-        return res.json();
-    })
-    .catch(err => console.log(err));
-};
-
-export const findPeople = (userId, token) => {
-    return fetch(`${process.env.REACT_APP_API_URL}/user/findpeople/${userId}`, {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        }
     })
     .then(res => {
         return res.json();

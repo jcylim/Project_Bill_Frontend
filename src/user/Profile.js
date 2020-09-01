@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { isAuthenticated } from '../auth';
 import { Redirect, Link } from 'react-router-dom';
-import DeleteUser from './DeleteUser';
-import { read } from './apiUser';
-import { listByUser } from '../post/apiPost';
-import FollowProfileButton from './FollowProfileButton';
+import { read, removeUser } from './apiUser';
+import { list, listByUser } from '../task/apiTask';
+import { listHandshakes } from '../handshake/apiHandshake';
 import ProfileTabs from './ProfileTabs';
 import DefaultProfile from '../img/avatar.png';
 
@@ -12,60 +11,63 @@ class Profile extends Component {
     constructor() {
         super();
         this.state = {
-            user: { following: [], followers: [] },
+            user: {},
             redirectToSignIn: false,
-            following: false,
+            redirectToDashboard: false,
             error: '',
-            posts: []
+            tasks: [],
+            allTasks: [],
+            handshakes: []
         }
     }
 
-    // check follow
-    checkFollow = user => {
-        const jwt = isAuthenticated();
-        const match = user.followers.find(follower => {
-            return follower._id === jwt.user._id;
-        })
-        return match;
-    };
-
-    clickFollowButton = callApi => {
-        const userId = isAuthenticated().user._id;
+    loadHandshakes = companyId => {
         const token = isAuthenticated().token;
 
-        callApi(userId, token, this.state.user._id)
-        .then(data => {
-            if (data.error) {
-                this.setState({error: data.error});
-            } else {
-                this.setState({user: data, following: !this.state.following});
-            }
-        })
-    };
-
-    loadPosts = userId => {
-        const token = isAuthenticated().token;
-        listByUser(userId, token)
+        listHandshakes(companyId, token)
         .then(data => {
             if (data.error) {
                 console.log(data.error);
             } else {
-                this.setState({ posts: data });
+                this.setState({ handshakes: data, loading: false });
+            }
+        })
+    };
+
+    loadTasks = (companyId, userId) => {
+        const token = isAuthenticated().token;
+
+        listByUser(companyId, userId, token)
+        .then(data => {
+            if (data.error) {
+                console.log(data.error);
+            } else {
+                this.setState({ tasks: data });
             }
         });
+
+        list(companyId, token)
+        .then(data => {
+            if (data.error) {
+                console.log(data.error);
+            } else {
+                this.setState({ allTasks: data, loading: false });
+            }
+        })
     };
 
     init = userId => {
         const token = isAuthenticated().token;
+        const companyId = this.props.match.params.companyId;
 
-        read(userId, token)
+        read(companyId, userId, token)
         .then(data => {
             if(data.error) {
                 this.setState({ redirectToSignIn: true });
             } else {
-                let following = this.checkFollow(data);
-                this.setState({ user: data, following });
-                this.loadPosts(data._id);
+                this.setState({ user: data });
+                this.loadTasks(companyId, data._id);
+                this.loadHandshakes(companyId);
             }
         })
     };
@@ -80,11 +82,36 @@ class Profile extends Component {
         this.init(userId);
     }
 
-    render() {
-        const { user, redirectToSignIn, following, posts } = this.state;
-        if (redirectToSignIn) return <Redirect to="/signin" />
+    clickRemoveSubmit = () => {
+        const token = isAuthenticated().token;
 
-        const photoUrl = user._id ? `${process.env.REACT_APP_API_URL}/user/photo/${user._id}?${new Date().getTime()}` : DefaultProfile;
+        removeUser(this.state.user.company, this.state.user._id, token)
+        .then(data => {
+            if (data.error) this.setState({ error: data.error })
+            else 
+                this.setState({
+                    error: '',
+                    redirectToDashboard: true
+                })
+        });
+    };
+
+    clickRemoveSubmitConfirmation = () => {
+        let answer = window.confirm("Are you sure you want to delete this employee?");
+        if (answer) {
+            this.clickRemoveSubmit();
+        }
+    };
+
+    render() {
+        const { user, redirectToSignIn, redirectToDashboard, tasks, allTasks, handshakes } = this.state;
+        if (redirectToSignIn) {
+            return <Redirect to="/signin" />
+        } else if (redirectToDashboard) {
+            return <Redirect to={`/${user.company}/dashboard`} />
+        }
+
+        const photoUrl = user._id ? `${process.env.REACT_APP_API_URL}/${user.company}/user/photo/${user._id}?${new Date().getTime()}` : DefaultProfile;
 
         return (
             <div className="container">
@@ -94,7 +121,7 @@ class Profile extends Component {
                         <img 
                             src={photoUrl}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={user.username} 
+                            alt={user.email} 
                             style={{height: '200px', width: 'auto'}}
                             className='img-thumbnail'
                         />
@@ -102,38 +129,41 @@ class Profile extends Component {
 
                     <div className="col-md-8">
                         <div className="lead mt-2">
-                            <p>Hello {user.username}!</p>
+                            <p>Hello {user.first_name} {user.last_name}!</p>
+                            <p>Title: {user.title}</p>
                             <p>Email: {user.email}</p>
                             <p>Joined since {new Date(user.created).toDateString()}</p>
                         </div>
                         {isAuthenticated().user && 
-                         isAuthenticated().user._id === user._id ? (
+                         isAuthenticated().user._id === user._id && (
                             <div className="d-inline-block">
-                                <Link className="btn btn-raised btn-info mr-5" to={'/post/create'}>
-                                    Create Post
-                                </Link>
-                                <Link className="btn btn-raised btn-success mr-5" to={`/user/edit/${user._id}`}>
+                                <Link className="btn btn-raised btn-success mr-5" to={`/${user.company}/employee/edit/${user._id}`}>
                                     Edit Profile
                                 </Link>
-                                <DeleteUser userId={user._id}/>
                             </div>
-                        ) : (
-                            <FollowProfileButton 
-                                following={following}
-                                onButtonClick={this.clickFollowButton}
-                            />
+                        )}
+                        {isAuthenticated().company && (
+                            <div className="d-inline-block">
+                                <Link className="btn btn-raised btn-success mr-5" to={`/${user.company}/employee/edit/${user._id}`}>
+                                    Edit Profile
+                                </Link>
+                                <button 
+                                    className="btn btn-raised btn-danger mr-5"
+                                    onClick={this.clickRemoveSubmitConfirmation}
+                                >
+                                    Remove Employee
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
                 <div className="row">
                     <div className="col md-12 mt-5 mb-3">
-                        <hr />
-                        <p className="lead">{user.about}</p>
-                        <hr />
                         <ProfileTabs 
-                            followers={user.followers} 
-                            following={user.following}
-                            posts={posts}
+                            handshakes={handshakes}
+                            tasks={tasks}
+                            allTasks={allTasks}
+                            user={user._id}
                         />
                     </div>
                 </div>

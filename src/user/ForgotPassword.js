@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { forgotPassword } from "../auth";
+import { userForgotPassword } from "../auth";
  
 class ForgotPassword extends Component {
     state = {
@@ -11,7 +11,7 @@ class ForgotPassword extends Component {
     forgotPassword = e => {
         e.preventDefault();
         this.setState({ message: "", error: "" });
-        forgotPassword(this.state.email).then(data => {
+        userForgotPassword(this.state.email).then(data => {
             if (data.error) {
                 console.log(data.error);
                 this.setState({ error: data.error });

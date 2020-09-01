@@ -1,70 +1,62 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import DefaultProfile from '../img/avatar.png';
 
 export class ProfileTabs extends Component {
     render() {
-        const { following, followers, posts } = this.props;
+        const {
+            handshakes, 
+            tasks, 
+            allTasks, 
+            user 
+        } = this.props;
+        let assignedHandshake = handshakes.filter(handshake => handshake.assignedTo.some(a => a._id === user));
+        let assignedTask = allTasks.filter(task => task.assignedTo.some(a => a._id === user));
+
         return (
             <div>
                 <div className='row'>
-                    <div className='col-md-4'>
-                        <h3 className='text-primary'>Followers</h3>
+                    <div className='col-md-12'>
+                        <h4 className='text-primary'>Handshakes Assigned ({assignedHandshake.length})</h4>
                         <hr/>
-                        {followers.map((follower, i) => (
+                        {assignedHandshake.map((handshake, i) => (
                             <div key={i}>
                                 <div>
-                                    <Link to={`/user/${follower._id}`}>
-                                        <img
-                                            className='float-left mr-2'
-                                            height='30px'
-                                            width='30px'
-                                            style={{borderRadius: '50%', border: '1px solid black'}}
-                                            src={`${process.env.REACT_APP_API_URL}/user/photo/${follower._id}`}
-                                            alt={follower.username}
-                                            onError={i => (i.target.src = `${DefaultProfile}`)}
-                                        />
+                                    <Link to={`/${handshake.company}/handshake/${handshake._id}`}>
                                         <div>
-                                            <p className='lead'>{follower.username}</p>
+                                            <p className='lead'>{handshake.title}</p>
                                         </div>
                                     </Link>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className='col-md-4'>
-                        <h3 className='text-primary'>Following</h3>
+                </div>
+                <br/>
+                <div className='row'>
+                    <div className='col-md-6'>
+                        <h4 className='text-primary'>Tasks Assigned ({assignedTask.length})</h4>
                         <hr/>
-                        {following.map((person, i) => (
+                        {assignedTask.map((task, i) => (
                             <div key={i}>
                                 <div>
-                                    <Link to={`/user/${person._id}`}>
-                                        <img
-                                            className='float-left mr-2'
-                                            height='30px'
-                                            width='30px'
-                                            style={{borderRadius: '50%', border: '1px solid black'}}
-                                            src={`${process.env.REACT_APP_API_URL}/user/photo/${person._id}`}
-                                            alt={person.username}
-                                            onError={i => (i.target.src = `${DefaultProfile}`)}
-                                        />
+                                    <Link to={`/${task.company}/task/${task._id}`}>
                                         <div>
-                                            <p className='lead'>{person.username}</p>
+                                            <p className='lead'>{task.title}</p>
                                         </div>
                                     </Link>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className='col-md-4'>
-                        <h3 className='text-primary'>Posts</h3>
+                    <div className='col-md-6'>
+                        <h4 className='text-primary'>Tasks Created ({tasks.length})</h4>
                         <hr/>
-                        {posts.map((post, i) => (
+                        {tasks.map((task, i) => (
                             <div key={i}>
                                 <div>
-                                    <Link to={`/post/${post._id}`}>
+                                    <Link to={`/${task.company}/task/${task._id}`}>
                                         <div>
-                                            <p className='lead'>{post.title}</p>
+                                            <p className='lead'>{task.title}</p>
                                         </div>
                                     </Link>
                                 </div>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { resetPassword } from "../auth";
+import {userResetPassword } from "../auth";
  
 class ResetPassword extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class ResetPassword extends Component {
         e.preventDefault();
         this.setState({ message: "", error: "" });
  
-        resetPassword({
+        userResetPassword({
             newPassword: this.state.newPassword,
             resetPasswordLink: this.props.match.params.resetPasswordToken
         }).then(data => {

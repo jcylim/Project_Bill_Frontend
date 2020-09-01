@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { list } from './apiUser';
+import { listUsers } from './apiUser';
+import { isAuthenticated } from '../auth';
 import DefaultProfile from '../img/avatar.png';
 
 class Users extends Component {
@@ -12,7 +13,9 @@ class Users extends Component {
     }
 
     componentDidMount() {
-        list().then(data => {
+        this.companyId = this.props.match.params.companyId;
+
+        listUsers(this.companyId, isAuthenticated().token).then(data => {
             if (data.error) {
                 console.log(data.error);
             } else {
@@ -33,12 +36,12 @@ class Users extends Component {
                             className='img-thumbnail'
                         />
                         <div className="card-body">
-                            <h5 className="card-title">{user.username}</h5>
+                            <h5 className="card-title">{user.first_name} {user.last_name}</h5>
                             <p className="card-text">
                                 {user.email}
                             </p>
                             <Link 
-                                to={`/user/${user._id}`}
+                                to={`/${user.company}/employee/${user._id}`}
                                 className="btn btn-raised btn-primary btn-sm"
                             >
                                 View Profile
@@ -54,7 +57,15 @@ class Users extends Component {
         const { users } = this.state; 
         return (
             <div className="container">
-                <h2 className="mt-5 mb-5">Users</h2>
+                {users.length === 0 ? (
+                    <h3 className="mt-5 mb-5">
+                        No employees added to company yet. Please{""} <Link to={`/${this.companyId}/employee/add`}>add employee</Link>.
+                    </h3>
+                ) : (
+                    <h3 className="mt-5 mb-5">
+                        {!users.length ? 'Loading...' : 'Employees'}
+                    </h3>
+                )}
                 {this.renderUsers(users)}
             </div>
         );

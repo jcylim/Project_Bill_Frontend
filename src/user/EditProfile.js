@@ -10,10 +10,11 @@ class EditProfile extends Component {
         super()
         this.state = {
             id: "",
-            username: "",
+            first_name: "",
+            last_name: "",
+            title: "",
             email: "",
             password: "",
-            about: "",
             error: "",
             fileSize: 0,
             redirectToProfile: false,
@@ -21,17 +22,18 @@ class EditProfile extends Component {
         }
     }
 
-    init = userId => {
-        read(userId, isAuthenticated().token)
+    init = (companyId, userId) => {
+        read(companyId, userId, isAuthenticated().token)
         .then(data => {
             if(data.error) {
-                this.setState({ redirectToSignIn: true });
+                this.setState({ redirectToProfile: true });
             } else {
                 this.setState({ 
                     id: data._id, 
-                    username: data.username, 
+                    first_name: data.first_name, 
+                    last_name: data.last_name, 
+                    title: data.title, 
                     email: data.email,
-                    about: data.about,
                     error: "" 
                 });
             }
@@ -40,18 +42,23 @@ class EditProfile extends Component {
 
     componentDidMount() {
         this.userData = new FormData();
+        this.companyId = this.props.match.params.companyId;
         const userId = this.props.match.params.userId;
-        this.init(userId);
+        this.init(this.companyId, userId);
     }
 
     isValid = () => {
-        const { username, email, password, fileSize } = this.state;
+        const { first_name, last_name, title, email, password, fileSize } = this.state;
         if (fileSize > 100000) {
             this.setState({error: "File size should be less than 100KB", loading: false});
             return false;
         }
-        if (username.length === 0) {
+        if (first_name.length === 0 || last_name.length === 0) {
             this.setState({error: "Name is required", loading: false});
+            return false;
+        }
+        if (title.length === 0) {
+            this.setState({error: "Title is required", loading: false});
             return false;
         }
         // email@domain.com
@@ -72,7 +79,7 @@ class EditProfile extends Component {
 
         if (this.isValid()) {
             const { id } = this.state;
-            update(id, isAuthenticated().token, this.userData)
+            update(this.companyId, id, isAuthenticated().token, this.userData)
             .then(data => {
                 if (data.error) {
                     this.setState({error: data.error});
@@ -95,7 +102,7 @@ class EditProfile extends Component {
         this.setState({ [field]: value, fileSize });
     };
 
-    editForm = (username, email, password, about) => (
+    editForm = (first_name, last_name, title, email, password) => (
         <form>
             <div className='form-group'>
                 <label className='text-muted'>Profile Photo</label>
@@ -107,12 +114,30 @@ class EditProfile extends Component {
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Username</label>
+                <label className='text-muted'>First Name</label>
                 <input 
-                    onChange={this.handlerChange('username')} 
+                    onChange={this.handlerChange('first_name')} 
                     type='text' 
                     className='form-control'
-                    value={username}
+                    value={first_name}
+                />
+            </div>
+            <div className='form-group'>
+                <label className='text-muted'>Last Name</label>
+                <input 
+                    onChange={this.handlerChange('last_name')} 
+                    type='text' 
+                    className='form-control'
+                    value={last_name}
+                />
+            </div>
+            <div className='form-group'>
+                <label className='text-muted'>Title</label>
+                <input 
+                    onChange={this.handlerChange('title')} 
+                    type='text' 
+                    className='form-control'
+                    value={title}
                 />
             </div>
             <div className='form-group'>
@@ -122,15 +147,6 @@ class EditProfile extends Component {
                     type='email' 
                     className='form-control'
                     value={email}
-                />
-            </div>
-            <div className='form-group'>
-                <label className='text-muted'>About</label>
-                <textarea 
-                    onChange={this.handlerChange('about')} 
-                    type='text' 
-                    className='form-control'
-                    value={about}
                 />
             </div>
             <div className='form-group'>
@@ -153,20 +169,21 @@ class EditProfile extends Component {
     render() {
         const { 
             id, 
-            username, 
+            first_name,
+            last_name, 
+            title,
             email, 
-            password, 
-            about,
+            password,
             redirectToProfile, 
             error,
             loading 
         } = this.state;
 
         if (redirectToProfile) {
-            return <Redirect to={`/user/${id}`} />;
+            return <Redirect to={`/${this.companyId}/employee/${id}`} />;
         }
 
-        const photoUrl = id ? `${process.env.REACT_APP_API_URL}/user/photo/${id}?${new Date().getTime()}` : DefaultProfile;
+        const photoUrl = id ? `${process.env.REACT_APP_API_URL}/${this.companyId}/user/photo/${id}?${new Date().getTime()}` : DefaultProfile;
 
         return (
             <div className="container">
@@ -183,12 +200,12 @@ class EditProfile extends Component {
                 <img 
                     src={photoUrl}
                     onError={i => (i.target.src = `${DefaultProfile}`)}
-                    alt={username} 
+                    alt={id} 
                     style={{height: '200px', width: 'auto'}}
                     className='img-thumbnail'
                 />
 
-                { this.editForm(username, email, password, about) }
+                { this.editForm(first_name, last_name, title, email, password) }
             </div>
         );
     }

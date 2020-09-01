@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { signIn, authenticate } from '../auth';
+import { userSignIn, authenticate } from '../auth';
 import Loading from '../Loading';
 
 class SignIn extends Component {
@@ -9,6 +9,7 @@ class SignIn extends Component {
         this.state = {
             email: '',
             password: '',
+            companyId: '',
             error: '',
             redirectToReferer: false,
             loading: false
@@ -23,14 +24,15 @@ class SignIn extends Component {
             email,
             password
         };
-        signIn(user)
+
+        userSignIn(user)
         .then(data => {
             if (data.error) {
                 this.setState({error: data.error, loading: false});
             } else {
                 // authenticate
                 authenticate(data, () => {
-                    this.setState({redirectToReferer: true});
+                    this.setState({ companyId: data.user.company, redirectToReferer: true });
                 });
             }
         });
@@ -70,15 +72,15 @@ class SignIn extends Component {
     );
 
     render() {
-        const { email, password, error, redirectToReferer, loading } = this.state;
+        const { email, password, companyId, error, redirectToReferer, loading } = this.state;
 
         if (redirectToReferer) {
-            return <Redirect to="/" />
+            return <Redirect to={`/${companyId}/dashboard`} />
         }
 
         return (
             <div className='container'>
-                <h2 className='mt-5 mb-5'>Sign In</h2>
+                <h2 className='mt-5 mb-5'>Sign in as employee</h2>
                 
                 <div 
                     className='alert alert-danger'
@@ -93,7 +95,14 @@ class SignIn extends Component {
 
                 <p>
                     <Link
-                        to="/forgot-password"
+                        to="/root/signin"
+                        className="btn btn-raised btn-info mt-3 mr-4"
+                    >
+                        {" "}
+                        Sign in as admin
+                    </Link>
+                    <Link
+                        to='/forgot-password'
                         className="btn btn-raised btn-danger mt-3"
                     >
                         {" "}
