@@ -121,3 +121,35 @@ export const uncomment = (companyId, userId, customerId, token, comment) => {
     })
     .catch(err => console.log(err));
 };
+
+export const convertToCustomer = (companyId, customerId, isProspect, token) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/customer/convert/${customerId}`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({isProspect})
+    })
+    .then(res => {
+        return res.json();
+    }) 
+    .catch(err => console.log(err));
+};
+
+export const addCustomers = (companyId, token, customers) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/${companyId}/customers`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ customers })
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};

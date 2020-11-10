@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { isAuthenticated, saveHistoryToStorage } from '../auth';
 import { Redirect, Link } from 'react-router-dom';
 import { listUsers } from '../user/apiUser';
-import { read, removeCustomer } from './apiCustomer';
+import { read, removeCustomer, convertToCustomer } from './apiCustomer';
 import { listByCustomer } from '../task/apiTask';
 import { listHandshakesByCustomer } from '../handshake/apiHandshake';
 import Comment from './Comment';
@@ -21,6 +21,7 @@ class SingleCustomer extends Component {
         super();
         this.state = {
             customer: {},
+            isProspect: true,
             comments: [],
             redirectToSignIn: false,
             redirectToCustomers: false,
@@ -80,6 +81,7 @@ class SingleCustomer extends Component {
             } else {
                 this.setState({ 
                     customer: data,
+                    isProspect: data.isProspect,
                     comments: data.comments 
                 });
                 this.loadTasks(companyId, data._id);
@@ -100,6 +102,21 @@ class SingleCustomer extends Component {
         const customerId = props.match.params.customerId;
         this.init(customerId);
     }
+
+    convertCustomer = () => {
+        const token = isAuthenticated().token;
+        const companyId = this.props.match.params.companyId;
+        const customerId = this.props.match.params.customerId;
+
+        convertToCustomer(companyId, customerId, !this.state.isProspect, token)
+        .then(data => {
+            if(data.error) {
+                console.log(data.error);
+            } else {
+                this.setState({ isProspect: !this.state.isProspect });
+            }
+        });
+    };
 
     removeCustomerSubmit = () => {
         const token = isAuthenticated().token;
@@ -129,6 +146,7 @@ class SingleCustomer extends Component {
     render() {
         const { 
             customer, 
+            isProspect,
             comments, 
             redirectToSignIn, 
             redirectToCustomers, 
@@ -150,6 +168,17 @@ class SingleCustomer extends Component {
                     </h3>
             
                     <div className="btn-toolbar mb-2 mb-md-0">
+                        {
+                            isProspect ? (
+                                <button onClick={this.convertCustomer} className='btn btn-success btn-raised mr-5'>
+                                    Convert to Customer
+                                </button>
+                            ) : (
+                                <button onClick={this.convertCustomer} className='btn btn-info btn-raised mr-5'>
+                                    Convert back to Prospect
+                                </button>
+                            )
+                        }
                         <Link 
                             to={`/${customer.company}/customers`}
                             className="btn btn-raised btn-outline-info mr-5"
@@ -221,27 +250,31 @@ class SingleCustomer extends Component {
                         />
                     </div>
                 </div>
-                <ul className="nav nav-tabs" id="myTab" role="tablist">
-                    <li className="nav-item">
-                        <a className="nav-link active" id="handshakes-tab" data-toggle="tab" href="#handshakes" role="tab" aria-controls="handshakes" aria-selected="true">Handshakes</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" id="tasks-tab" data-toggle="tab" href="#tasks" role="tab" aria-controls="tasks" aria-selected="false">Tasks</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
-                    </li>
-                </ul>
-                <hr/>
-                <div className="tab-content" id="myTabContent">
-                    <div className="tab-pane fade show active" id="handshakes" role="tabpanel" aria-labelledby="handshakes-tab">
-                        <HandshakeTabs handshakes={handshakes} />
-                    </div>
-                    <div className="tab-pane fade" id="tasks" role="tabpanel" aria-labelledby="tasks-tab">
-                        <TaskTabs tasks={tasks} />
-                    </div>
-                    <div className="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">documents</div>
-                </div>
+                {!isProspect && (
+                    <>
+                        <ul className="nav nav-tabs" id="myTab" role="tablist">
+                            <li className="nav-item">
+                                <a className="nav-link active" id="handshakes-tab" data-toggle="tab" href="#handshakes" role="tab" aria-controls="handshakes" aria-selected="true">Handshakes</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" id="tasks-tab" data-toggle="tab" href="#tasks" role="tab" aria-controls="tasks" aria-selected="false">Tasks</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+                            </li>
+                        </ul>
+                        <hr/>
+                        <div className="tab-content" id="myTabContent">
+                            <div className="tab-pane fade show active" id="handshakes" role="tabpanel" aria-labelledby="handshakes-tab">
+                                <HandshakeTabs handshakes={handshakes} />
+                            </div>
+                            <div className="tab-pane fade" id="tasks" role="tabpanel" aria-labelledby="tasks-tab">
+                                <TaskTabs tasks={tasks} />
+                            </div>
+                            <div className="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">documents</div>
+                        </div>
+                    </>
+                )}
             </div>
         );
     }

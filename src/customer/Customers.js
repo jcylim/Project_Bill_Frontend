@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { listCustomers, removeCustomer } from './apiCustomer';
 import { isAuthenticated } from '../auth';
 import { typeSelectOptions, industrySelectOptions } from './CustomerSelectOptions';
+import CustomerCSVReader from './CustomerCSVReader';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
@@ -329,6 +330,8 @@ class Customers extends Component {
                         {!customers.length ? 'Loading...' : 'Customers'}
                     </h3>
                 )}
+                <CustomerCSVReader companyId={this.companyId} token={isAuthenticated().token}/>
+                <br/>
                 {this.renderCustomers(customers)}
             </div>
         );
