@@ -154,7 +154,7 @@ class Menu extends Component {
                                     </div>
                                     Handshakes
                                 </div>
-                                {historyData.handshakes && historyData.handshakes.map((item) => {
+                                {historyData && historyData.handshakes && historyData.handshakes.map((item) => {
                                     return (
                                         //render as state changes
                                         <div className='nav'>
@@ -183,7 +183,7 @@ class Menu extends Component {
                                     </div>
                                     Customers
                                 </div>
-                                {historyData.customers && historyData.customers.map((item) => {
+                                {historyData && historyData.customers && historyData.customers.map((item) => {
                                     return (
                                         //render as state changes
                                         <div className='nav'>
