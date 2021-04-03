@@ -21,11 +21,11 @@ export class ProfileTabs extends Component {
                                             width='30px'
                                             style={{borderRadius: '50%', border: '1px solid black'}}
                                             src={`${process.env.REACT_APP_API_URL}/user/photo/${follower._id}`}
-                                            alt={follower.username}
+                                            alt={follower.name}
                                             onError={i => (i.target.src = `${DefaultProfile}`)}
                                         />
                                         <div>
-                                            <p className='lead'>{follower.username}</p>
+                                            <p className='lead'>{follower.name}</p>
                                         </div>
                                     </Link>
                                 </div>
@@ -45,11 +45,11 @@ export class ProfileTabs extends Component {
                                             width='30px'
                                             style={{borderRadius: '50%', border: '1px solid black'}}
                                             src={`${process.env.REACT_APP_API_URL}/user/photo/${person._id}`}
-                                            alt={person.username}
+                                            alt={person.name}
                                             onError={i => (i.target.src = `${DefaultProfile}`)}
                                         />
                                         <div>
-                                            <p className='lead'>{person.username}</p>
+                                            <p className='lead'>{person.name}</p>
                                         </div>
                                     </Link>
                                 </div>

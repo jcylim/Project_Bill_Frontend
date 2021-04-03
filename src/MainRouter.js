@@ -6,6 +6,7 @@ import SignUp from './user/SignUp';
 import SignIn from './user/SignIn';
 import Profile from './user/Profile';
 import Users from './user/Users';
+import Sellers from './user/Sellers';
 import EditProfile from './user/EditProfile';
 import PrivateRoute from './auth/PrivateRoute';
 import FindPeople from './user/FindPeople';
@@ -27,6 +28,7 @@ const MainRouter = () => (
             <Route exact path='/post/:postId' component={SinglePost} />
             <PrivateRoute exact path='/post/edit/:postId' component={EditPost} />
             <Route exact path='/users' component={Users} />
+            <Route exact path='/sellers' component={Sellers} />
             <Route exact path='/signup' component={SignUp} />
             <Route exact path='/signin' component={SignIn} />
             <PrivateRoute exact path='/user/edit/:userId' component={EditProfile} />

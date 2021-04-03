@@ -44,7 +44,7 @@ class SignIn extends Component {
     signInForm = (email, password) => (
         <form>
             <div className='form-group'>
-                <label className='text-muted'>Email</label>
+                <label className='text'>Email</label>
                 <input 
                     onChange={this.handlerChange('email')} 
                     type='email' 
@@ -53,7 +53,7 @@ class SignIn extends Component {
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Password</label>
+                <label className='text'>Password</label>
                 <input 
                     onChange={this.handlerChange('password')} 
                     type='password' 

@@ -4,13 +4,13 @@ import { signOut, isAuthenticated } from '../auth';
 
 const isActive = (history, path) => {
     if (history.location.pathname === path) {
-        return {color: "#ff9900"}
+        return {color: "#2ecc71"}
     } else return {color: "#ffffff"}
 };
 
 const Menu = ({history}) => (
     <div>
-        <ul className="nav nav-tabs bg-primary">
+        <ul className="nav nav-tabs bg-dark">
             <li className="nav-item">
                 <Link className="nav-link" style={isActive(history, "/")} to="/">
                     Home
@@ -18,14 +18,14 @@ const Menu = ({history}) => (
             </li>
 
             <li className="nav-item">
-                <Link className="nav-link" style={isActive(history, "/users")} to="/users">
-                    Users
+                <Link className="nav-link" style={isActive(history, "/sellers")} to="/sellers">
+                    Home-Chefs / Food Suppliers
                 </Link>
             </li>
 
             <li className="nav-item">
-                <Link className="nav-link" to={'/post/create'} style={isActive(history, '/post/create')}>
-                    Create New Post
+                <Link className="nav-link" style={isActive(history, "/users")} to="/users">
+                    Customers
                 </Link>
             </li>
             
@@ -44,6 +44,12 @@ const Menu = ({history}) => (
                 </>
             )}
 
+            {isAuthenticated() && (isAuthenticated().type == "chef" || isAuthenticated().type == "food supplier") && (
+                <Link className="nav-link" to={'/post/create'} style={isActive(history, '/post/create')}>
+                    Create New Post
+                </Link>
+            )}
+
             {isAuthenticated() && (
                 <>
                     <li className="nav-item">
@@ -53,7 +59,7 @@ const Menu = ({history}) => (
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to={`/user/${isAuthenticated().user._id}`} style={isActive(history, `/user/${isAuthenticated().user._id}`)}>
-                            {`${isAuthenticated().user.username}'s Profile`}
+                            {`${isAuthenticated().user.name}'s Profile`}
                         </Link>
                     </li>
                     <li className="nav-item">

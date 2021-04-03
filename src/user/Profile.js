@@ -94,7 +94,7 @@ class Profile extends Component {
                         <img 
                             src={photoUrl}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={user.username} 
+                            alt={user.name} 
                             style={{height: '200px', width: 'auto'}}
                             className='img-thumbnail'
                         />
@@ -102,7 +102,7 @@ class Profile extends Component {
 
                     <div className="col-md-8">
                         <div className="lead mt-2">
-                            <p>Hello {user.username}!</p>
+                            <p>Hello {user.name}!</p>
                             <p>Email: {user.email}</p>
                             <p>Joined since {new Date(user.created).toDateString()}</p>
                         </div>

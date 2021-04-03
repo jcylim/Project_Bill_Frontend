@@ -93,7 +93,7 @@ class SinglePost extends Component {
         `/user/${post.postedBy._id}` : 
         '';
         const posterName = post.postedBy ? 
-        post.postedBy.username : 
+        post.postedBy.name : 
         'Unknown';
         const userId = post.postedBy ? 
         `${post.postedBy._id}` : 

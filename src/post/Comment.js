@@ -116,7 +116,7 @@ class Comment extends Component {
                                         width='30px'
                                         style={{borderRadius: '50%', border: '1px solid black'}}
                                         src={`${process.env.REACT_APP_API_URL}/user/photo/${comment.postedBy._id}`}
-                                        alt={comment.postedBy.username}
+                                        alt={comment.postedBy.name}
                                         onError={i => (i.target.src = `${DefaultProfile}`)}
                                     />
                                 </Link>
@@ -126,7 +126,7 @@ class Comment extends Component {
                                     <p className='font-italic mark'>
                                         Posted by{' '} 
                                         <Link to={`${comment.postedBy._id}`}>
-                                            {comment.postedBy.username}
+                                            {comment.postedBy.name}
                                         </Link>
                                         {' '}on {new Date(comment.created).toDateString()}
                                         <span>

@@ -45,7 +45,7 @@ class FindPeople extends Component {
                 this.setState({ 
                     users: toFollow, 
                     open: true,
-                    followMessage: `Following ${user.username}`
+                    followMessage: `Following ${user.name}`
                 });
             }
         })
@@ -58,12 +58,12 @@ class FindPeople extends Component {
                         <img 
                             src={`${process.env.REACT_APP_API_URL}/user/photo/${user._id}?${new Date().getTime()}`}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={user.username} 
+                            alt={user.name} 
                             style={{height: '200px', width: 'auto'}}
                             className='img-thumbnail'
                         />
                         <div className="card-body">
-                            <h5 className="card-title">{user.username}</h5>
+                            <h5 className="card-title">{user.name}</h5>
                             <p className="card-text">
                                 {user.email}
                             </p>

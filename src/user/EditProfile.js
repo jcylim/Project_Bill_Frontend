@@ -10,7 +10,7 @@ class EditProfile extends Component {
         super()
         this.state = {
             id: "",
-            username: "",
+            name: "",
             email: "",
             password: "",
             about: "",
@@ -29,7 +29,7 @@ class EditProfile extends Component {
             } else {
                 this.setState({ 
                     id: data._id, 
-                    username: data.username, 
+                    name: data.name, 
                     email: data.email,
                     about: data.about,
                     error: "" 
@@ -45,12 +45,12 @@ class EditProfile extends Component {
     }
 
     isValid = () => {
-        const { username, email, password, fileSize } = this.state;
+        const { name, email, password, fileSize } = this.state;
         if (fileSize > 100000) {
             this.setState({error: "File size should be less than 100KB", loading: false});
             return false;
         }
-        if (username.length === 0) {
+        if (name.length === 0) {
             this.setState({error: "Name is required", loading: false});
             return false;
         }
@@ -95,7 +95,7 @@ class EditProfile extends Component {
         this.setState({ [field]: value, fileSize });
     };
 
-    editForm = (username, email, password, about) => (
+    editForm = (name, email, password, about) => (
         <form>
             <div className='form-group'>
                 <label className='text-muted'>Profile Photo</label>
@@ -107,12 +107,12 @@ class EditProfile extends Component {
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Username</label>
+                <label className='text-muted'>name</label>
                 <input 
-                    onChange={this.handlerChange('username')} 
+                    onChange={this.handlerChange('name')} 
                     type='text' 
                     className='form-control'
-                    value={username}
+                    value={name}
                 />
             </div>
             <div className='form-group'>
@@ -153,7 +153,7 @@ class EditProfile extends Component {
     render() {
         const { 
             id, 
-            username, 
+            name, 
             email, 
             password, 
             about,
@@ -183,12 +183,12 @@ class EditProfile extends Component {
                 <img 
                     src={photoUrl}
                     onError={i => (i.target.src = `${DefaultProfile}`)}
-                    alt={username} 
+                    alt={name} 
                     style={{height: '200px', width: 'auto'}}
                     className='img-thumbnail'
                 />
 
-                { this.editForm(username, email, password, about) }
+                { this.editForm(name, email, password, about) }
             </div>
         );
     }

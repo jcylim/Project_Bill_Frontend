@@ -31,7 +31,7 @@ class Posts extends Component {
                     `/user/${post.postedBy._id}` : 
                     '';
                     const posterName = post.postedBy ? 
-                    post.postedBy.username : 
+                    post.postedBy.name : 
                     'Unknown';
 
                     return (

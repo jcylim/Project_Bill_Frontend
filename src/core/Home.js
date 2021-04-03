@@ -5,7 +5,7 @@ const Home = () => (
     <div>
         <div className='jumbotron'>
             <h2>Home</h2>
-            <p className='lead'>Welcome to Workflow Home Page</p>
+            <p className='lead'>Welcome to Homely's Main Page</p>
         </div>
         <div className='container'>
             <Posts />
