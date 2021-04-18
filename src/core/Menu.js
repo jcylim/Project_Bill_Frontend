@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { signOut, isAuthenticated } from '../auth';
+import DefaultPost from '../img/logo.png';
 
 const isActive = (history, path) => {
     if (history.location.pathname === path) {
@@ -11,6 +12,19 @@ const isActive = (history, path) => {
 const Menu = ({history}) => (
     <div>
         <ul className="nav nav-tabs bg-dark">
+            <a href="/">
+                <img 
+                    src={`${DefaultPost}`}
+                    alt="logo" 
+                    style={{
+                        width: '100px',
+                        height: '46px',
+                        overflow: 'hidden',
+                    }}
+                    className='img-fluid'
+                />
+            </a>
+
             <li className="nav-item">
                 <Link className="nav-link" style={isActive(history, "/")} to="/">
                     Home
@@ -44,7 +58,7 @@ const Menu = ({history}) => (
                 </>
             )}
 
-            {isAuthenticated() && (isAuthenticated().type == "chef" || isAuthenticated().type == "food supplier") && (
+            {isAuthenticated() && (isAuthenticated().user.type == "chef" || isAuthenticated().user.type == "food supplier") && (
                 <Link className="nav-link" to={'/post/create'} style={isActive(history, '/post/create')}>
                     Create New Post
                 </Link>
