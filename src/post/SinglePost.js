@@ -138,15 +138,15 @@ class SinglePost extends Component {
                     </Link>
                     {' '}on {new Date(post.created).toDateString()}
                 </p>
-                {isAuthenticated().user && 
-                    isAuthenticated().user._id === userId && (
-                    <div className='d-flex justify-content-between'>  
-                        <h3 className='ml-2'><StatusBadge status={status} /></h3>
+                <div className='d-flex justify-content-between'>  
+                    <h3 className='ml-2'><StatusBadge status={status} /></h3>
+                    {isAuthenticated().user && 
+                        isAuthenticated().user._id === userId && (
                         <StatusDropdownMenu
                             onButtonClick={this.setPostStatus} 
                         />
-                    </div>
-                )}
+                    )}
+                </div>
                 <br/>
                 <img 
                     src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}?${new Date().getTime()}`}
