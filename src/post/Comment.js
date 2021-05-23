@@ -77,7 +77,7 @@ class Comment extends Component {
 
         return (
             <div>
-                <h2 className='mt-5 mb-4'>Leave a comment</h2>
+                <h3 className='mt-5 mb-4'>Leave a comment</h3>
 
                 <div 
                     className='alert alert-danger'
@@ -104,7 +104,7 @@ class Comment extends Component {
                 <br/>
 
                 <div className='col-md-12'>
-                    <h3 className='text-primary'>({comments.length}) Comments</h3>
+                    <h4 className='text-primary'>({comments.length}) Comments</h4>
                     <hr/>
                     {comments.map((comment, i) => (
                         <div key={i}>

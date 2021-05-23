@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { list } from './apiPost';
 import DefaultPost from '../img/postPic.jpg';
+import StatusBadge from './StatusBadge';
 
 class Posts extends Component {
     constructor() {
@@ -33,6 +34,8 @@ class Posts extends Component {
                     const posterName = post.postedBy ? 
                     post.postedBy.name : 
                     'Unknown';
+                    const price = post.price;
+                    const status = post.status;
 
                     return (
                         <div className="card col-md-4" style={{width: "18rem"}} key={i}>
@@ -45,10 +48,16 @@ class Posts extends Component {
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{post.title}</h5>
+                                <h6 className="card-text" style={{color: 'green'}}>
+                                    {`$${price}`}
+                                </h6>
                                 <p className="card-text">
                                     {post.body.substring(0, 100)}
                                 </p>
-                                <br/>
+                                <div style={{'display': 'flex', 'justifyContent': 'flex-end', 'paddingBottom': '5px'}}>
+
+                                    <h4><StatusBadge status={status} /></h4>
+                                </div>
                                 <p className='font-italic mark'>
                                     Posted by{' '} 
                                     <Link to={`${posterId}`}>
@@ -71,14 +80,20 @@ class Posts extends Component {
     };
 
     render() {
-        const { posts } = this.state; 
+        const { posts } = this.state;
+        let activePosts = posts.filter(post => post.status === 'ACTIVE');
+        let soldPosts = posts.filter(post => post.status === 'SOLD');
+        
         return (
             <div className="container">
-                <h2 className="mt-5 mb-5">
-                    {!posts.length ? 'Loading...' : 'Recent Posts'}
+                <h2 className="mt-4 mb-4">
+                    <b>{!posts.length ? 'No Posts Yet' : 'Recent Posts'}</b>
                 </h2>
-
-                {this.renderPosts(posts)}
+                <h3 className="mt-4 mb-4">Active Posts</h3>
+                {this.renderPosts(activePosts)}
+                <h3 className="mt-4 mb-4">Sold Posts</h3>
+                {this.renderPosts(soldPosts)}
+                <br/>
             </div>
         );
     }

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { singlePost, remove, like, unlike } from './apiPost';
+import { singlePost, remove, like, unlike, setStatus, pay } from './apiPost';
 import { isAuthenticated } from '../auth';
 import { Link, Redirect } from 'react-router-dom';
 import DefaultPost from '../img/postPic.jpg';
 import Comment from './Comment';
+import StripeCheckout from 'react-stripe-checkout';
+import StatusBadge from './StatusBadge';
+import StatusDropdownMenu from './StatusDropdownMenu';
 
 class SinglePost extends Component {
     state = {
@@ -11,6 +14,7 @@ class SinglePost extends Component {
         redirectToHome: false,
         like: false,
         likes: 0,
+        status: '',
         comments: [],
         redirectToSignin: false,
         loading: false
@@ -35,6 +39,7 @@ class SinglePost extends Component {
                     post: data,
                     likes: data.likes.length,
                     like: this.checkLike(data.likes),
+                    status: data.status,
                     comments: data.comments,
                     loading: false 
                 });
@@ -88,6 +93,29 @@ class SinglePost extends Component {
         });
     };
 
+    setPostStatus = status => {
+        const token = isAuthenticated().token;
+
+        setStatus(this.state.post._id, token, status).then(data => {
+        if (data.error) {
+            this.setState({ error: data.error });
+        } else {
+            this.setState({ status: data.status });
+        }
+        });
+    };
+
+    makePayment = token => {  
+        const authToken = isAuthenticated().token;  
+        pay(this.state.post._id, token, authToken).then(data => {
+            console.log("response: ", data);
+            const { status } = data;
+            console.log(`status : ${status}`);
+            // change status to "SOLD"
+            this.setPostStatus("SOLD");
+        });
+    };
+
     renderPost = post => {
         const posterId = post.postedBy ? 
         `/user/${post.postedBy._id}` : 
@@ -98,7 +126,8 @@ class SinglePost extends Component {
         const userId = post.postedBy ? 
         `${post.postedBy._id}` : 
         '';
-        const { like, likes } = this.state;
+        const { like, likes, status } = this.state;
+        const price = post.price;
 
         return (
             <div className="card-body">
@@ -109,6 +138,16 @@ class SinglePost extends Component {
                     </Link>
                     {' '}on {new Date(post.created).toDateString()}
                 </p>
+                {isAuthenticated().user && 
+                    isAuthenticated().user._id === userId && (
+                    <div className='d-flex justify-content-between'>  
+                        <h3 className='ml-2'><StatusBadge status={status} /></h3>
+                        <StatusDropdownMenu
+                            onButtonClick={this.setPostStatus} 
+                        />
+                    </div>
+                )}
+                <br/>
                 <img 
                     src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}?${new Date().getTime()}`}
                     onError={i => (i.target.src = `${DefaultPost}`)}
@@ -145,6 +184,21 @@ class SinglePost extends Component {
                         {likes} Likes
                     </h3>
                 )}
+                <div className='d-flex justify-content-between'>
+                    <h4 className="card-text" style={{color: 'green'}}>
+                        {`$${price}`}
+                    </h4>  
+                    {isAuthenticated().user && (
+                        <StripeCheckout 
+                            stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
+                            token={this.makePayment} 
+                            name="Buy Produce"
+                            amount={price * 100}
+                        >
+                            <button className="btn btn-lg btn-outline-info">Pay ${price}</button>
+                        </StripeCheckout>
+                    )}
+                </div>              
                 <p className="card-text mt-4">
                     {post.body}
                 </p>
@@ -194,7 +248,7 @@ class SinglePost extends Component {
 
         return (
             <div className='container'>
-                <h2 className='display-2 mt-5 mb-5'>{post.title}</h2>
+                <h2 className='display-4 mt-5 mb-3'>{post.title}</h2>
             
                 {loading ? (
                     <div className="jumbotron text-center">

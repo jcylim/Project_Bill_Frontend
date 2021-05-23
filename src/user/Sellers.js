@@ -13,13 +13,13 @@ class Sellers extends Component {
     }
 
     componentDidMount() {
-        listChefs().then(data => {
-            if (data.error) {
-                console.log(data.error);
-            } else {
-                this.setState({ chefs: data });
-            }
-        })
+        // listChefs().then(data => {
+        //     if (data.error) {
+        //         console.log(data.error);
+        //     } else {
+        //         this.setState({ chefs: data });
+        //     }
+        // })
 
         listFoodSuppliers().then(data => {
             if (data.error) {
@@ -92,8 +92,8 @@ class Sellers extends Component {
         const { chefs, foodSuppliers } = this.state; 
         return (
             <div className="container">
-                <h2 className="mt-5 mb-5">Home-Chefs</h2>
-                {this.renderChefs(chefs)}
+                {/* <h2 className="mt-5 mb-5">Home-Chefs</h2>
+                {this.renderChefs(chefs)} */}
                 <h2 className="mt-5 mb-5">Local Food Suppliers</h2>
                 {this.renderFoodSuppliers(foodSuppliers)}
             </div>

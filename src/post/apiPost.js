@@ -48,6 +48,22 @@ export const listByUser = (userId, token) => {
     .catch(err => console.log(err));
 };
 
+export const setStatus = (postId, token, status) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/post/status/${postId}`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({status})
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};
+
 export const remove = (postId, token) => {
     return fetch(`${process.env.REACT_APP_API_URL}/post/${postId}`, {
         method: "DELETE",
@@ -138,6 +154,22 @@ export const uncomment = (userId, token, postId, comment) => {
     })
     .then(res => {
         return res.json();
+    })
+    .catch(err => console.log(err));
+};
+
+export const pay = (postId, token, authToken) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/post/payment/${postId}`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`
+        },
+        body: JSON.stringify({token})
+    })
+    .then(res => {
+        return res;
     })
     .catch(err => console.log(err));
 };

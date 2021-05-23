@@ -33,15 +33,15 @@ const Menu = ({history}) => (
 
             <li className="nav-item">
                 <Link className="nav-link" style={isActive(history, "/sellers")} to="/sellers">
-                    Home-Chefs / Food Suppliers
+                    Local Food Suppliers
                 </Link>
             </li>
 
-            <li className="nav-item">
+            {/* <li className="nav-item">
                 <Link className="nav-link" style={isActive(history, "/users")} to="/users">
-                    Customers
+                    Consumers
                 </Link>
-            </li>
+            </li> */}
             
             {!isAuthenticated() && (
                 <>
@@ -58,7 +58,7 @@ const Menu = ({history}) => (
                 </>
             )}
 
-            {isAuthenticated() && (isAuthenticated().user.type == "chef" || isAuthenticated().user.type == "food supplier") && (
+            {isAuthenticated() && isAuthenticated().user.type == "food supplier" && (
                 <Link className="nav-link" to={'/post/create'} style={isActive(history, '/post/create')}>
                     Create New Post
                 </Link>
@@ -66,11 +66,11 @@ const Menu = ({history}) => (
 
             {isAuthenticated() && (
                 <>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                         <Link className="nav-link" to={'/findpeople'} style={isActive(history, '/findpeople')}>
                             Find People
                         </Link>
-                    </li>
+                    </li> */}
                     <li className="nav-item">
                         <Link className="nav-link" to={`/user/${isAuthenticated().user._id}`} style={isActive(history, `/user/${isAuthenticated().user._id}`)}>
                             {`${isAuthenticated().user.name}'s Profile`}

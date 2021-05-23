@@ -10,6 +10,7 @@ class NewPost extends Component {
         this.state = {
             title: '',
             body: '',
+            price: '',
             photo: '',
             fileSize: 0,
             user: {},
@@ -53,6 +54,7 @@ class NewPost extends Component {
                         loading: false, 
                         title: '', 
                         body: '',
+                        price: 0,
                         redirectToProfile: true
                     });
                 }
@@ -68,7 +70,7 @@ class NewPost extends Component {
         this.setState({ [field]: value, fileSize });
     };
 
-    newPostForm = (title, body) => (
+    newPostForm = (title, body, price) => (
         <form>
             <div className='form-group'>
                 <label className='text-muted'>Post Photo</label>
@@ -97,6 +99,16 @@ class NewPost extends Component {
                     value={body}
                 />
             </div>
+            <div className='form-group'>
+                <label className='text-muted'>Price</label>
+                <input 
+                    onChange={this.handlerChange('price')} 
+                    type='text' 
+                    className='form-control'
+                    value={price}
+                    placeholder='Optional. Default price is $0'
+                />
+            </div>
             <button 
                 onClick={this.clickSubmit}
                 className='btn btn-raised btn-primary'>
@@ -109,6 +121,7 @@ class NewPost extends Component {
         const { 
             title, 
             body,
+            price,
             user,
             redirectToProfile,
             error,
@@ -131,7 +144,7 @@ class NewPost extends Component {
 
                 <Loading loading={loading} />
 
-                { this.newPostForm(title, body) }
+                { this.newPostForm(title, body, price) }
             </div>
         );
     }

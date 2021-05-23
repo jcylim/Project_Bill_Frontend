@@ -12,6 +12,7 @@ class EditPost extends Component {
             id: '',
             title: '',
             body: '',
+            price: 0,
             error: "",
             fileSize: 0,
             redirectToPost: false,
@@ -29,6 +30,7 @@ class EditPost extends Component {
                     id: data._id, 
                     title: data.title,
                     body: data.body,
+                    price: data.price,
                     error: '',
                     loading: false 
                 });
@@ -72,6 +74,7 @@ class EditPost extends Component {
                         loading: false, 
                         title: '', 
                         body: '',
+                        price: 0,
                         redirectToPost: true
                     });
                 }
@@ -87,7 +90,7 @@ class EditPost extends Component {
         this.setState({ [field]: value, fileSize });
     };
 
-    editPostForm = (title, body) => (
+    editPostForm = (title, body, price) => (
         <form>
             <div className='form-group'>
                 <label className='text-muted'>Post Photo</label>
@@ -116,6 +119,16 @@ class EditPost extends Component {
                     value={body}
                 />
             </div>
+            <div className='form-group'>
+                <label className='text-muted'>Price</label>
+                <input 
+                    onChange={this.handlerChange('price')} 
+                    type='text' 
+                    className='form-control'
+                    value={price}
+                    placeholder='Default price is $0'
+                />
+            </div>
             <button 
                 onClick={this.clickSubmit}
                 className='btn btn-raised btn-primary'>
@@ -129,6 +142,7 @@ class EditPost extends Component {
             id,
             title, 
             body, 
+            price,
             redirectToPost, 
             error,
             loading 
@@ -160,7 +174,7 @@ class EditPost extends Component {
                     className='img-thumbnail'
                 />
 
-                { this.editPostForm(title, body) }
+                { this.editPostForm(title, body, price) }
             </div>
         );
     }

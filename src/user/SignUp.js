@@ -81,9 +81,8 @@ class SignUp extends Component {
 
     signUpForm = (name, email, password, type, street, city, state, country, phone) => {
         let types = [
-            'Customer',
-            'Chef',
-            'Food Supplier'
+            'Consumer',
+            'Local Food Supplier'
         ];
 
         let options = types.map((type, i) =>

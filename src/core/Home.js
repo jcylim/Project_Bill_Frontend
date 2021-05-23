@@ -4,30 +4,15 @@ import DefaultPost from '../img/home_page.jpg';
 
 const Home = () => (
     <div>
-        {/* <div className='bg-image'>
-            <h2>Home</h2>
-            <p className='lead'>Welcome to Homely's Main Page</p>
-            <img 
-                src={`${DefaultPost}`}
-                onError={i => (i.target.src = `${DefaultPost}`)}
-                alt="home" 
-                style={{height: '100%', width: '100%'}}
-                className='img-fluid'
-            />
-        </div> */}
-        <div style={{ 
-            backgroundImage: `url(${DefaultPost})`,
-            backgroundRepeat: 'no-repeat',
-            width:'100%',
-            height: '500px' 
-        }}>
-            <h2 className='lead'><b>Welcome to Homely's Main Page</b></h2>
+        <div style={{padding: '20px'}}>
+            <h2 className='primary'>Welcome to Homely's Main Page (Beta)</h2>
         </div>
         <div style={{ 
             backgroundImage: `url(${DefaultPost})`,
-            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             width:'100%',
-            height: '500px'
+            height: '300px'
         }}/>
         <div className='container'>
             <Posts />
