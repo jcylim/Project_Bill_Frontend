@@ -8,7 +8,8 @@ class SignUp extends Component {
     constructor() {
         super();
         this.state = {
-            name: '',
+            first_name: '',
+            last_name: '',
             email: '',
             password: '',
             type: '',
@@ -28,14 +29,16 @@ class SignUp extends Component {
             this.setState({error: "Address field is required", loading: false});
             return false;
         }
+        console.log("checked");
         return true; 
     };
 
     clickSubmit = event => {
         event.preventDefault();
-        const { name, email, password, type, street, city, state, country, phone} = this.state;
+        const { first_name, last_name, email, password, type, street, city, state, country, phone} = this.state;
         const user = {
-            name,
+            first_name,
+            last_name,
             email,
             password,
             type,
@@ -46,24 +49,27 @@ class SignUp extends Component {
             phone
         };
 
-        signUp(user)
-        .then(data => {
-            if (data.error) this.setState({error: data.error})
-            else 
-                this.setState({
-                    name: '',
-                    email: '',
-                    password: '',
-                    type: '',
-                    street: '',
-                    city: '',
-                    state: '',
-                    country: '',
-                    phone: '',
-                    error: '',
-                    open: true
-                })
-        });
+        if (this.isAddressValid()) {
+            signUp(user)
+            .then(data => {
+                if (data.error) this.setState({error: data.error})
+                else 
+                    this.setState({
+                        first_name: '',
+                        last_name: '',
+                        email: '',
+                        password: '',
+                        type: '',
+                        street: '',
+                        city: '',
+                        state: '',
+                        country: '',
+                        phone: '',
+                        error: '',
+                        open: true
+                    })
+            });
+        }
     };
 
     handleChange = field => event => {
@@ -79,7 +85,7 @@ class SignUp extends Component {
         this.setState({ country });
     };
 
-    signUpForm = (name, email, password, type, street, city, state, country, phone) => {
+    signUpForm = (first_name, last_name, email, password, street, city, phone) => {
         let types = [
             'Consumer',
             'Local Food Supplier'
@@ -93,14 +99,25 @@ class SignUp extends Component {
 
         return (
             <form>
-                <div className='form-group'>
-                    <label className='text'>Name</label>
-                    <input 
-                        onChange={this.handleChange('name')} 
-                        type='text'
-                        className='form-control'
-                        value={name}
-                    />
+                <div className="form-row">
+                    <div className='form-group col'>
+                        <label className='text'>First Name</label>
+                        <input 
+                            onChange={this.handleChange('first_name')} 
+                            type='text'
+                            className='form-control'
+                            value={first_name}
+                        />
+                    </div>
+                    <div className='form-group col'>
+                        <label className='text'>Last Name</label>
+                        <input 
+                            onChange={this.handleChange('last_name')} 
+                            type='text'
+                            className='form-control'
+                            value={last_name}
+                        />
+                    </div>
                 </div>
                 <div className='form-group'>
                     <label className='text'>Email</label>
@@ -173,7 +190,7 @@ class SignUp extends Component {
     };
 
     render() {
-        const { name, email, password, type, street, city, state, country, phone, error, open } = this.state;
+        const { first_name, last_name, email, password, type, street, city, state, country, phone, error, open } = this.state;
 
         return (
             <div className='container'>
@@ -192,7 +209,7 @@ class SignUp extends Component {
                     New account has been created successfully. Please{""} <Link to="/signin">sign in</Link>
                 </div>
 
-                { this.signUpForm(name, email, password, type, street, city, state, country, phone) }
+                { this.signUpForm(first_name, last_name, email, password, type, street, city, state, country, phone) }
 
             </div>
         )

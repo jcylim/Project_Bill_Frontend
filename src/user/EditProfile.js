@@ -4,16 +4,25 @@ import { read, update, updateUser } from './apiUser';
 import DefaultProfile from '../img/avatar.png';
 import { Redirect } from 'react-router-dom';
 import Loading from '../Loading';
+import StateDropdownMenu from './StateDropdownMenu';
+import CountryDropdownMenu from './CountryDropdownMenu';
  
 class EditProfile extends Component {
     constructor() {
         super()
         this.state = {
             id: "",
-            name: "",
+            first_name: "",
+            last_name: "",
             email: "",
             password: "",
-            about: "",
+            type: "",
+            address: "",
+            street: "",
+            city: "",
+            state: "",
+            country: "",
+            phone: "",
             error: "",
             fileSize: 0,
             redirectToProfile: false,
@@ -29,11 +38,23 @@ class EditProfile extends Component {
             } else {
                 this.setState({ 
                     id: data._id, 
-                    name: data.name, 
+                    first_name: data.first_name,
+                    last_name: data.last_name, 
                     email: data.email,
-                    about: data.about,
+                    address: data.address,
+                    phone: data.phone,
                     error: "" 
                 });
+                
+                if (this.state.address) {
+                    let street = this.state.address.split(',')[0].trim();
+                    let city = this.state.address.split(',')[1].trim();
+                    let state = this.state.address.split(',')[2].trim();
+                    let country = this.state.address.split(',')[3].trim();
+
+                    this.setState({ street, city, state, country });
+                }
+
             }
         })
     };
@@ -45,17 +66,21 @@ class EditProfile extends Component {
     }
 
     isValid = () => {
-        const { name, email, password, fileSize } = this.state;
+        const { first_name, last_name, email, password, fileSize } = this.state;
         if (fileSize > 100000) {
             this.setState({error: "File size should be less than 100KB", loading: false});
             return false;
         }
-        if (name.length === 0) {
-            this.setState({error: "Name is required", loading: false});
+        if (first_name.length === 0) {
+            this.setState({error: "First name is required", loading: false});
+            return false;
+        }
+        if (last_name.length === 0) {
+            this.setState({error: "Last name is required", loading: false});
             return false;
         }
         // email@domain.com
-        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
             this.setState({error: "Valid email is required", loading: false});
             return false;
         } 
@@ -75,7 +100,7 @@ class EditProfile extends Component {
             update(id, isAuthenticated().token, this.userData)
             .then(data => {
                 if (data.error) {
-                    this.setState({error: data.error});
+                    this.setState({ error: data.error, loading: false });
                 } else {
                     updateUser(data, () => {
                         this.setState({
@@ -95,68 +120,136 @@ class EditProfile extends Component {
         this.setState({ [field]: value, fileSize });
     };
 
-    editForm = (name, email, password, about) => (
-        <form>
-            <div className='form-group'>
-                <label className='text-muted'>Profile Photo</label>
-                <input 
-                    onChange={this.handlerChange('photo')} 
-                    type='file'
-                    accept='image/*'
-                    className='form-control'
-                />
-            </div>
-            <div className='form-group'>
-                <label className='text-muted'>name</label>
-                <input 
-                    onChange={this.handlerChange('name')} 
-                    type='text' 
-                    className='form-control'
-                    value={name}
-                />
-            </div>
-            <div className='form-group'>
-                <label className='text-muted'>Email</label>
-                <input 
-                    onChange={this.handlerChange('email')} 
-                    type='email' 
-                    className='form-control'
-                    value={email}
-                />
-            </div>
-            <div className='form-group'>
-                <label className='text-muted'>About</label>
-                <textarea 
-                    onChange={this.handlerChange('about')} 
-                    type='text' 
-                    className='form-control'
-                    value={about}
-                />
-            </div>
-            <div className='form-group'>
-                <label className='text-muted'>Password</label>
-                <input 
-                    onChange={this.handlerChange('password')} 
-                    type='password' 
-                    className='form-control'
-                    value={password}
-                />
-            </div>
-            <button 
-                onClick={this.clickSubmit}
-                className='btn btn-raised btn-primary'>
-                Update
-            </button>
-        </form>
-    );
+    onSelectStateChange = state => {
+        this.setState({ state });
+    };
+
+    onSelectCountryChange = country => {
+        this.setState({ country });
+    };
+
+    editForm = (first_name, last_name, email, password, street, city, phone) => {
+        let types = [
+            'Consumer',
+            'Local Food Supplier'
+        ];
+
+        let options = types.map((type, i) =>
+            <option key={i}>
+                {type}
+            </option>
+        );
+
+        return (
+            <form>
+                <div className='form-group'>
+                    <label className='text-muted'>Profile Photo</label>
+                    <input 
+                        onChange={this.handlerChange('photo')} 
+                        type='file'
+                        accept='image/*'
+                        className='form-control'
+                    />
+                </div>
+                <div className="form-row">
+                    <div className='form-group col'>
+                        <label className='text-muted'>First Name</label>
+                        <input 
+                            onChange={this.handlerChange('first_name')} 
+                            type='text' 
+                            className='form-control'
+                            value={first_name}
+                        />
+                    </div>
+                    <div className='form-group col'>
+                        <label className='text-muted'>Last Name</label>
+                        <input 
+                            onChange={this.handlerChange('last_name')} 
+                            type='text'
+                            className='form-control'
+                            value={last_name}
+                        />
+                    </div>
+                </div>
+                <div className='form-group'>
+                    <label className='text-muted'>Email</label>
+                    <input 
+                        onChange={this.handlerChange('email')} 
+                        type='email' 
+                        className='form-control'
+                        value={email}
+                    />
+                </div>
+                <div className='form-group'>
+                    <label className='text-muted'>Password</label>
+                    <input 
+                        onChange={this.handlerChange('password')} 
+                        type='password' 
+                        className='form-control'
+                        value={password}
+                    />
+                </div>
+                <div className="form-group">
+                    <label for="inputAddress">Address</label>
+                    <input 
+                        type="text"
+                        className="form-control"
+                        id="inputAddress" 
+                        placeholder="e.g. 1234 Main St"
+                        value={street} 
+                        onChange={this.handlerChange('street')} 
+                    />
+                </div>
+                <div className="form-row">
+                    <div className="form-group col-md-6">
+                        <label for="inputCity">City</label>
+                        <input 
+                            type="text"
+                            className="form-control"
+                            id="inputCity"
+                            value={city}
+                            onChange={this.handlerChange('city')}
+                        />
+                    </div>
+                    <StateDropdownMenu onSelectStateChange={this.onSelectStateChange} />
+                    <CountryDropdownMenu onSelectCountryChange={this.onSelectCountryChange} />
+                </div>
+                <div className="form-group">
+                    <label for="inputCell">Phone Number</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="inputCell"
+                        value={phone} 
+                        onChange={this.handlerChange('phone')}
+                    />
+                </div>
+                <div className="form-group">
+                    <label for="inputState">Account Type</label>
+                    <select id="inputState" className="form-control" onChange={this.handlerChange('type')}>
+                        <option>Choose...</option>
+                        {options}
+                    </select>
+                </div>
+                <button 
+                    onClick={this.clickSubmit}
+                    className='btn btn-raised btn-primary'>
+                    Update
+                </button>
+            </form>
+        );
+    };
 
     render() {
         const { 
             id, 
-            name, 
+            first_name,
+            last_name, 
             email, 
             password, 
-            about,
+            street, 
+            city, 
+            phone,
             redirectToProfile, 
             error,
             loading 
@@ -183,12 +276,13 @@ class EditProfile extends Component {
                 <img 
                     src={photoUrl}
                     onError={i => (i.target.src = `${DefaultProfile}`)}
-                    alt={name} 
+                    alt={first_name} 
                     style={{height: '200px', width: 'auto'}}
                     className='img-thumbnail'
                 />
 
-                { this.editForm(name, email, password, about) }
+                { this.editForm(first_name, last_name, email, password, street, city, phone) }
+                <br/>
             </div>
         );
     }

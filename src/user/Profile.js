@@ -88,13 +88,18 @@ class Profile extends Component {
 
         return (
             <div className="container">
-                <h2 className='mt-5 mb-5'>Profile</h2>
+                <div className='d-flex align-items-center mt-5 mb-5'>
+                    <h2 className='mr-3'>Profile</h2>
+                    {user && user.type === "local food supplier" && (
+                        <h6><span className="badge badge-pill badge-success">Homely Certified Local Food Supplier</span></h6>
+                    )}
+                </div>
                 <div className="row">
                     <div className="col-md-4">
                         <img 
                             src={photoUrl}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={user.name} 
+                            alt={user.last_name} 
                             style={{height: '200px', width: 'auto'}}
                             className='img-thumbnail'
                         />
@@ -102,7 +107,7 @@ class Profile extends Component {
 
                     <div className="col-md-8">
                         <div className="lead mt-2">
-                            <p>Hello {user.name}!</p>
+                            <p>Hello {user.first_name} {user.last_name}!</p>
                             <p>Email: {user.email}</p>
                             <p>Joined since {new Date(user.created).toDateString()}</p>
                         </div>

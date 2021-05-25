@@ -37,12 +37,12 @@ class Sellers extends Component {
                         <img 
                             src={`${process.env.REACT_APP_API_URL}/user/photo/${chef._id}?${new Date().getTime()}`}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={chef.name} 
+                            alt={chef.last_name} 
                             style={{height: '200px', width: 'auto'}}
                             className='img-thumbnail'
                         />
                         <div className="card-body">
-                            <h5 className="card-title">{chef.name}</h5>
+                            <h5 className="card-title">{chef.first_name} {chef.last_name}</h5>
                             <p className="card-text">
                                 {chef.email}
                             </p>
@@ -66,12 +66,12 @@ class Sellers extends Component {
                         <img 
                             src={`${process.env.REACT_APP_API_URL}/user/photo/${foodSupplier._id}?${new Date().getTime()}`}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={foodSupplier.name} 
+                            alt={foodSupplier.last_name} 
                             style={{height: '200px', width: 'auto'}}
                             className='img-thumbnail'
                         />
                         <div className="card-body">
-                            <h5 className="card-title">{foodSupplier.name}</h5>
+                            <h5 className="card-title">{foodSupplier.first_name} {foodSupplier.last_name}</h5>
                             <p className="card-text">
                                 {foodSupplier.email}
                             </p>

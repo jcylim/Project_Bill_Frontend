@@ -32,7 +32,7 @@ class Posts extends Component {
                     `/user/${post.postedBy._id}` : 
                     '';
                     const posterName = post.postedBy ? 
-                    post.postedBy.name : 
+                    `${post.postedBy.first_name} ${post.postedBy.last_name}` : 
                     'Unknown';
                     const price = post.price;
                     const status = post.status;

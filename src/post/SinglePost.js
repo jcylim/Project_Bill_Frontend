@@ -121,7 +121,7 @@ class SinglePost extends Component {
         `/user/${post.postedBy._id}` : 
         '';
         const posterName = post.postedBy ? 
-        post.postedBy.name : 
+        `${post.postedBy.first_name} ${post.postedBy.last_name}` : 
         'Unknown';
         const userId = post.postedBy ? 
         `${post.postedBy._id}` : 
@@ -160,7 +160,7 @@ class SinglePost extends Component {
                     className='img-thumbnail'
                 />
 
-                {like ? (
+                {/* {like ? (
                     <h3 onClick={this.likeToggle} className='mt-3'>
                         <i 
                             className='fa fa-thumbs-up text-success'
@@ -183,20 +183,26 @@ class SinglePost extends Component {
                         />{' '}
                         {likes} Likes
                     </h3>
-                )}
-                <div className='d-flex justify-content-between'>
+                )} */}
+                <div className='d-flex justify-content-between mt-3'>
                     <h4 className="card-text" style={{color: 'green'}}>
                         {`$${price}`}
                     </h4>  
                     {isAuthenticated().user && (
-                        <StripeCheckout 
-                            stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
-                            token={this.makePayment} 
-                            name="Buy Produce"
-                            amount={price * 100}
+                        // <StripeCheckout 
+                        //     stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
+                        //     token={this.makePayment} 
+                        //     name="Buy Produce"
+                        //     amount={price * 100}
+                        // >
+                        //     <button className="btn btn-lg btn-outline-info">Pay ${price}</button>
+                        // </StripeCheckout>
+                        <Link 
+                            to={`/pay/${post._id}`}
+                            className="btn btn-lg btn-outline-info"
                         >
-                            <button className="btn btn-lg btn-outline-info">Pay ${price}</button>
-                        </StripeCheckout>
+                            Pay ${price}
+                        </Link>
                     )}
                 </div>              
                 <p className="card-text mt-4">
