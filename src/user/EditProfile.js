@@ -231,6 +231,7 @@ class EditProfile extends Component {
                         {options}
                     </select>
                 </div>
+                <br/>
                 <button 
                     onClick={this.clickSubmit}
                     className='btn btn-raised btn-primary'>
@@ -262,7 +263,7 @@ class EditProfile extends Component {
         const photoUrl = id ? `${process.env.REACT_APP_API_URL}/user/photo/${id}?${new Date().getTime()}` : DefaultProfile;
 
         return (
-            <div className="container">
+            <div className="container mb-5">
                 <h2 className="mt-5 mb-5">Edit Profile</h2>
                 <div 
                     className='alert alert-danger'

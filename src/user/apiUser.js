@@ -131,3 +131,21 @@ export const findPeople = (userId, token) => {
     })
     .catch(err => console.log(err));
 };
+
+export const onboardPayment = (userId, token) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/payment/onboarding/${userId}`, {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "Access-Control-Allow-Origin": "*"
+            // "Access-Control-Request-Method": "GET",
+            // "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+        }
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};

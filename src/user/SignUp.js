@@ -190,7 +190,7 @@ class SignUp extends Component {
     };
 
     render() {
-        const { first_name, last_name, email, password, type, street, city, state, country, phone, error, open } = this.state;
+        const { first_name, last_name, email, password, street, city, phone, error, open } = this.state;
 
         return (
             <div className='container'>
@@ -209,7 +209,7 @@ class SignUp extends Component {
                     New account has been created successfully. Please{""} <Link to="/signin">sign in</Link>
                 </div>
 
-                { this.signUpForm(first_name, last_name, email, password, type, street, city, state, country, phone) }
+                { this.signUpForm(first_name, last_name, email, password, street, city, phone) }
 
             </div>
         )

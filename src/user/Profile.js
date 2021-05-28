@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { isAuthenticated } from '../auth';
 import { Redirect, Link } from 'react-router-dom';
 import DeleteUser from './DeleteUser';
-import { read } from './apiUser';
+import { read, onboardPayment } from './apiUser';
 import { listByUser } from '../post/apiPost';
 import FollowProfileButton from './FollowProfileButton';
 import ProfileTabs from './ProfileTabs';
@@ -13,6 +13,7 @@ class Profile extends Component {
         super();
         this.state = {
             user: { following: [], followers: [] },
+            stripeOnboardingURL: '',
             redirectToSignIn: false,
             following: false,
             error: '',
@@ -53,6 +54,21 @@ class Profile extends Component {
                 this.setState({ posts: data });
             }
         });
+    };
+
+    setUpPayment = userId => {
+        const token = isAuthenticated().token;
+        onboardPayment(userId, token)
+        .then(data => {
+            // if (data.error) {
+            //     this.setState({error: data.error});
+            // } 
+            console.log(data);
+            // else {
+            //     this.setState({ stripeOnboardingURL: data.url });
+            // }
+        });
+        //console.log(userId);
     };
 
     init = userId => {
@@ -113,6 +129,7 @@ class Profile extends Component {
                         </div>
                         {isAuthenticated().user && 
                          isAuthenticated().user._id === user._id ? (
+                            <>
                             <div className="d-inline-block">
                                 <Link className="btn btn-raised btn-info mr-5" to={'/post/create'}>
                                     Create Post
@@ -122,6 +139,15 @@ class Profile extends Component {
                                 </Link>
                                 <DeleteUser userId={user._id}/>
                             </div>
+                            <div style={{ 'paddingTop': '20px'}}>
+                            <button 
+                                onClick={() => this.setUpPayment(user._id)} 
+                                className="btn btn-raised btn-outline-success"
+                                style={{ 'display': 'flex', 'justifyContent': 'center' }}>
+                                    Set Up Payment
+                            </button>
+                            </div>
+                            </>
                         ) : (
                             <FollowProfileButton 
                                 following={following}

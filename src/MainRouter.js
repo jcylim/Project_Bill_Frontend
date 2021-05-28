@@ -15,6 +15,7 @@ import SinglePost from './post/SinglePost';
 import EditPost from './post/EditPost';
 import ForgotPassword from "./user/ForgotPassword";
 import ResetPassword from "./user/ResetPassword";
+import Payment from "./post/PaymentForm/Payment";
 
 const MainRouter = () => (
     <div>
@@ -27,6 +28,7 @@ const MainRouter = () => (
             <PrivateRoute exact path='/post/create' component={NewPost} />
             <Route exact path='/post/:postId' component={SinglePost} />
             <PrivateRoute exact path='/post/edit/:postId' component={EditPost} />
+            <PrivateRoute exact path='/post/pay/:postId' component={Payment} />
             <Route exact path='/users' component={Users} />
             <Route exact path='/sellers' component={Sellers} />
             <Route exact path='/signup' component={SignUp} />

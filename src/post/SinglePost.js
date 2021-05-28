@@ -198,7 +198,14 @@ class SinglePost extends Component {
                         //     <button className="btn btn-lg btn-outline-info">Pay ${price}</button>
                         // </StripeCheckout>
                         <Link 
-                            to={`/pay/${post._id}`}
+                            to={{
+                                pathname: `/post/pay/${post._id}`,
+                                state: { 
+                                    price: price,
+                                    postId: post._id,
+                                    posterName: posterName
+                                }
+                            }}
                             className="btn btn-lg btn-outline-info"
                         >
                             Pay ${price}
