@@ -173,3 +173,19 @@ export const pay = (postId, token, authToken) => {
     })
     .catch(err => console.log(err));
 };
+
+export const newPay = (postId, consumer, seller, token) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/post/payment/${postId}`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ consumer, seller })
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};

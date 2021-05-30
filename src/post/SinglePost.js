@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { singlePost, remove, like, unlike, setStatus, pay } from './apiPost';
+import { checkOnboardStatus, onboardPayment } from '../user/apiUser';
 import { isAuthenticated } from '../auth';
 import { Link, Redirect } from 'react-router-dom';
 import DefaultPost from '../img/postPic.jpg';
@@ -17,6 +18,7 @@ class SinglePost extends Component {
         status: '',
         comments: [],
         redirectToSignin: false,
+        isStripeOnboarded: false,
         loading: false
     }
     
@@ -44,7 +46,9 @@ class SinglePost extends Component {
                     loading: false 
                 });
             }
-        })
+        });
+
+        this.checkIfOnboarded(isAuthenticated().user._id);
     };
     
     deletePost = () => {
@@ -116,6 +120,31 @@ class SinglePost extends Component {
         });
     };
 
+    setUpPayment = userId => {
+        const token = isAuthenticated().token;
+        onboardPayment(userId, token)
+        .then(data => {
+            if (data.error) {
+                this.setState({error: data.error});
+            } else {
+                window.location.href = data.url;
+            }
+        });
+    };
+
+    checkIfOnboarded = userId => {
+        const token = isAuthenticated().token;
+
+        checkOnboardStatus(userId, token)
+        .then(data => {
+            if (data.error) {
+                this.setState({error: data.error});
+            } else {
+                this.setState( { isStripeOnboarded: data.isOnboarded });
+            }
+        })
+    };
+
     renderPost = post => {
         const posterId = post.postedBy ? 
         `/user/${post.postedBy._id}` : 
@@ -126,8 +155,8 @@ class SinglePost extends Component {
         const userId = post.postedBy ? 
         `${post.postedBy._id}` : 
         '';
-        const { like, likes, status } = this.state;
-        const price = post.price;
+        const { like, likes, status, isStripeOnboarded } = this.state;
+        const price = parseFloat(post.price).toFixed(2);
 
         return (
             <div className="card-body">
@@ -153,7 +182,7 @@ class SinglePost extends Component {
                     onError={i => (i.target.src = `${DefaultPost}`)}
                     alt={post.title} 
                     style={{
-                        height: '300px', 
+                        height: '500px', 
                         width: '100%',
                         objectFit: 'cover' 
                     }}
@@ -185,10 +214,10 @@ class SinglePost extends Component {
                     </h3>
                 )} */}
                 <div className='d-flex justify-content-between mt-3'>
-                    <h4 className="card-text" style={{color: 'green'}}>
+                    <h3 className="card-text" style={{color: 'green'}}>
                         {`$${price}`}
-                    </h4>  
-                    {isAuthenticated().user && (
+                    </h3>  
+                    {isAuthenticated().user && isStripeOnboarded && (
                         // <StripeCheckout 
                         //     stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
                         //     token={this.makePayment} 
@@ -202,14 +231,21 @@ class SinglePost extends Component {
                                 pathname: `/post/pay/${post._id}`,
                                 state: { 
                                     price: price,
-                                    postId: post._id,
-                                    posterName: posterName
+                                    post: post
                                 }
                             }}
                             className="btn btn-lg btn-outline-info"
                         >
                             Pay ${price}
                         </Link>
+                    )}
+                    {isAuthenticated().user && !isStripeOnboarded && (
+                        <button 
+                            onClick={() => this.setUpPayment(isAuthenticated().user._id)} 
+                            className="btn btn-lg btn-outline-secondary"
+                            >
+                                Set Up Payment
+                        </button>
                     )}
                 </div>              
                 <p className="card-text mt-4">

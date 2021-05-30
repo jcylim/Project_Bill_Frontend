@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { isAuthenticated } from '../auth';
 import { Redirect, Link } from 'react-router-dom';
 import DeleteUser from './DeleteUser';
-import { read, onboardPayment } from './apiUser';
+import { read, onboardPayment, checkOnboardStatus } from './apiUser';
 import { listByUser } from '../post/apiPost';
 import FollowProfileButton from './FollowProfileButton';
 import ProfileTabs from './ProfileTabs';
@@ -13,7 +13,7 @@ class Profile extends Component {
         super();
         this.state = {
             user: { following: [], followers: [] },
-            stripeOnboardingURL: '',
+            isStripeOnboarded: false,
             redirectToSignIn: false,
             following: false,
             error: '',
@@ -60,15 +60,25 @@ class Profile extends Component {
         const token = isAuthenticated().token;
         onboardPayment(userId, token)
         .then(data => {
-            // if (data.error) {
-            //     this.setState({error: data.error});
-            // } 
-            console.log(data);
-            // else {
-            //     this.setState({ stripeOnboardingURL: data.url });
-            // }
+            if (data.error) {
+                this.setState({error: data.error});
+            } else {
+                window.location.href = data.url;
+            }
         });
-        //console.log(userId);
+    };
+
+    checkIfOnboarded = userId => {
+        const token = isAuthenticated().token;
+
+        checkOnboardStatus(userId, token)
+        .then(data => {
+            if (data.error) {
+                this.setState({error: data.error});
+            } else {
+                this.setState( { isStripeOnboarded: data.isOnboarded });
+            }
+        })
     };
 
     init = userId => {
@@ -89,15 +99,17 @@ class Profile extends Component {
     componentDidMount() {
         const userId = this.props.match.params.userId;
         this.init(userId);
+        this.checkIfOnboarded(userId);
     }
 
     componentWillReceiveProps(props) {
         const userId = props.match.params.userId;
         this.init(userId);
+        this.checkIfOnboarded(userId);
     }
 
     render() {
-        const { user, redirectToSignIn, following, posts } = this.state;
+        const { user, redirectToSignIn, following, posts, isStripeOnboarded } = this.state;
         if (redirectToSignIn) return <Redirect to="/signin" />
 
         const photoUrl = user._id ? `${process.env.REACT_APP_API_URL}/user/photo/${user._id}?${new Date().getTime()}` : DefaultProfile;
@@ -130,23 +142,25 @@ class Profile extends Component {
                         {isAuthenticated().user && 
                          isAuthenticated().user._id === user._id ? (
                             <>
-                            <div className="d-inline-block">
-                                <Link className="btn btn-raised btn-info mr-5" to={'/post/create'}>
-                                    Create Post
-                                </Link>
-                                <Link className="btn btn-raised btn-success mr-5" to={`/user/edit/${user._id}`}>
-                                    Edit Profile
-                                </Link>
-                                <DeleteUser userId={user._id}/>
-                            </div>
-                            <div style={{ 'paddingTop': '20px'}}>
-                            <button 
-                                onClick={() => this.setUpPayment(user._id)} 
-                                className="btn btn-raised btn-outline-success"
-                                style={{ 'display': 'flex', 'justifyContent': 'center' }}>
-                                    Set Up Payment
-                            </button>
-                            </div>
+                                <div className="d-inline-block">
+                                    <Link className="btn btn-raised btn-info mr-5" to={'/post/create'}>
+                                        Create Post
+                                    </Link>
+                                    <Link className="btn btn-raised btn-success mr-5" to={`/user/edit/${user._id}`}>
+                                        Edit Profile
+                                    </Link>
+                                    <DeleteUser userId={user._id}/>
+                                </div>
+                                {!isStripeOnboarded && (
+                                    <div style={{ 'paddingTop': '20px', 'paddingLeft': '90px'}}>
+                                        <button 
+                                            onClick={() => this.setUpPayment(user._id)} 
+                                            className="btn btn-raised btn-outline-secondary ml-5"
+                                            >
+                                                Set Up Payment
+                                        </button>
+                                    </div>
+                                )}
                             </>
                         ) : (
                             <FollowProfileButton 

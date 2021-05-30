@@ -58,7 +58,7 @@ const Menu = ({history}) => (
                 </>
             )}
 
-            {isAuthenticated() && isAuthenticated().user.type == "local food supplier" && (
+            {isAuthenticated() && isAuthenticated().user.type === "local food supplier" && (
                 <Link className="nav-link" to={'/post/create'} style={isActive(history, '/post/create')}>
                     Create New Post
                 </Link>

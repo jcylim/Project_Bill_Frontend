@@ -34,7 +34,7 @@ class Posts extends Component {
                     const posterName = post.postedBy ? 
                     `${post.postedBy.first_name} ${post.postedBy.last_name}` : 
                     'Unknown';
-                    const price = post.price;
+                    const price = parseFloat(post.price).toFixed(2);
                     const status = post.status;
 
                     return (
