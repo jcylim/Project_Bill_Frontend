@@ -22,7 +22,7 @@ export class CountryDropdownMenu extends Component {
 
         return (
             <div className="form-group col-md-4">
-                <label for="inputState">Country</label>
+                <label for="inputState">Country<span style={{color: 'red'}}>*</span></label>
                 <select id="inputState" className="form-control text-muted" onChange={this.handleChange}>
                     <option>Choose...</option>
                     {options}

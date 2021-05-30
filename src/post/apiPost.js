@@ -158,23 +158,23 @@ export const uncomment = (userId, token, postId, comment) => {
     .catch(err => console.log(err));
 };
 
-export const pay = (postId, token, authToken) => {
-    return fetch(`${process.env.REACT_APP_API_URL}/post/payment/${postId}`, {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`
-        },
-        body: JSON.stringify({token})
-    })
-    .then(res => {
-        return res;
-    })
-    .catch(err => console.log(err));
-};
+// export const pay = (postId, token, authToken) => {
+//     return fetch(`${process.env.REACT_APP_API_URL}/post/payment/${postId}`, {
+//         method: "POST",
+//         headers: {
+//             Accept: "application/json",
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${authToken}`
+//         },
+//         body: JSON.stringify({token})
+//     })
+//     .then(res => {
+//         return res;
+//     })
+//     .catch(err => console.log(err));
+// };
 
-export const newPay = (postId, consumer, seller, token) => {
+export const payWithStripe = (postId, consumer, seller, token) => {
     return fetch(`${process.env.REACT_APP_API_URL}/post/payment/${postId}`, {
         method: "POST",
         headers: {
@@ -183,6 +183,22 @@ export const newPay = (postId, consumer, seller, token) => {
             Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ consumer, seller })
+    })
+    .then(res => {
+        return res.json();
+    })
+    .catch(err => console.log(err));
+};
+
+export const sendSellerEmail = (postId, token, consumer) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/post/payment/emailConfirmation/${postId}`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({consumer})
     })
     .then(res => {
         return res.json();

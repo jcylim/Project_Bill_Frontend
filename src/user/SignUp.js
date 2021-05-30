@@ -101,7 +101,7 @@ class SignUp extends Component {
             <form>
                 <div className="form-row">
                     <div className='form-group col'>
-                        <label className='text'>First Name</label>
+                        <label className='text'>First Name<span style={{color: 'red'}}>*</span></label>
                         <input 
                             onChange={this.handleChange('first_name')} 
                             type='text'
@@ -110,7 +110,7 @@ class SignUp extends Component {
                         />
                     </div>
                     <div className='form-group col'>
-                        <label className='text'>Last Name</label>
+                        <label className='text'>Last Name<span style={{color: 'red'}}>*</span></label>
                         <input 
                             onChange={this.handleChange('last_name')} 
                             type='text'
@@ -120,7 +120,7 @@ class SignUp extends Component {
                     </div>
                 </div>
                 <div className='form-group'>
-                    <label className='text'>Email</label>
+                    <label className='text'>Email<span style={{color: 'red'}}>*</span></label>
                     <input 
                         onChange={this.handleChange('email')} 
                         type='email' 
@@ -129,7 +129,7 @@ class SignUp extends Component {
                     />
                 </div>
                 <div className='form-group'>
-                    <label className='text'>Password</label>
+                    <label className='text'>Password<span style={{color: 'red'}}>*</span></label>
                     <input 
                         onChange={this.handleChange('password')} 
                         type='password' 
@@ -138,7 +138,7 @@ class SignUp extends Component {
                     />
                 </div>
                 <div className="form-group">
-                    <label for="inputAddress">Address</label>
+                    <label for="inputAddress">Address<span style={{color: 'red'}}>*</span></label>
                     <input 
                         type="text"
                         className="form-control"
@@ -150,7 +150,7 @@ class SignUp extends Component {
                 </div>
                 <div className="form-row">
                     <div className="form-group col-md-6">
-                        <label for="inputCity">City</label>
+                        <label for="inputCity">City<span style={{color: 'red'}}>*</span></label>
                         <input 
                             type="text"
                             className="form-control"
@@ -163,7 +163,7 @@ class SignUp extends Component {
                     <CountryDropdownMenu onSelectCountryChange={this.onSelectCountryChange} />
                 </div>
                 <div className="form-group">
-                    <label for="inputCell">Phone Number (Optional)</label>
+                    <label for="inputCell">Phone Number</label>
                     <input 
                         type="text" 
                         className="form-control" 
@@ -173,7 +173,7 @@ class SignUp extends Component {
                     />
                 </div>
                 <div className="form-group">
-                    <label for="inputState">Account Type</label>
+                    <label for="inputState">Account Type<span style={{color: 'red'}}>*</span></label>
                     <select id="inputState" className="form-control" onChange={this.handleChange('type')}>
                         <option>Choose...</option>
                         {options}

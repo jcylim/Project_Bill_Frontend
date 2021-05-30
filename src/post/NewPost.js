@@ -88,6 +88,7 @@ class NewPost extends Component {
                     type='text' 
                     className='form-control'
                     value={title}
+                    placeholder='e.g. Home-grown apples'
                 />
             </div>
             <div className='form-group'>
@@ -97,6 +98,7 @@ class NewPost extends Component {
                     type='text' 
                     className='form-control'
                     value={body}
+                    placeholder='Brief description of the produce selling and pick-up/delivery details'
                 />
             </div>
             <div className='form-group'>

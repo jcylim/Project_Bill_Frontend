@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { singlePost, remove, like, unlike, setStatus, pay } from './apiPost';
+import { singlePost, remove, like, unlike, setStatus, payWithStripe } from './apiPost';
 import { checkOnboardStatus, onboardPayment } from '../user/apiUser';
 import { isAuthenticated } from '../auth';
 import { Link, Redirect } from 'react-router-dom';
@@ -48,7 +48,7 @@ class SinglePost extends Component {
             }
         });
 
-        this.checkIfOnboarded(isAuthenticated().user._id);
+        if (isAuthenticated().user) this.checkIfOnboarded(isAuthenticated().user._id);
     };
     
     deletePost = () => {
@@ -111,7 +111,7 @@ class SinglePost extends Component {
 
     makePayment = token => {  
         const authToken = isAuthenticated().token;  
-        pay(this.state.post._id, token, authToken).then(data => {
+        payWithStripe(this.state.post._id, token, authToken).then(data => {
             console.log("response: ", data);
             const { status } = data;
             console.log(`status : ${status}`);
@@ -217,7 +217,7 @@ class SinglePost extends Component {
                     <h3 className="card-text" style={{color: 'green'}}>
                         {`$${price}`}
                     </h3>  
-                    {isAuthenticated().user && isStripeOnboarded && (
+                    {isAuthenticated().user && !(isAuthenticated().user._id === userId) && isStripeOnboarded && (
                         // <StripeCheckout 
                         //     stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
                         //     token={this.makePayment} 
@@ -239,7 +239,7 @@ class SinglePost extends Component {
                             Pay ${price}
                         </Link>
                     )}
-                    {isAuthenticated().user && !isStripeOnboarded && (
+                    {isAuthenticated().user && !(isAuthenticated().user._id === userId) && !isStripeOnboarded && (
                         <button 
                             onClick={() => this.setUpPayment(isAuthenticated().user._id)} 
                             className="btn btn-lg btn-outline-secondary"

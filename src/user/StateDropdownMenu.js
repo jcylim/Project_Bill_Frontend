@@ -73,7 +73,7 @@ export class StateDropdownMenu extends Component {
 
         return (
             <div className="form-group col-md-2">
-                <label for="inputState">State</label>
+                <label for="inputState">State<span style={{color: 'red'}}>*</span></label>
                 <select id="inputState" className="form-control text-muted" onChange={this.handleChange}>
                     <option>Choose...</option>
                     {options}

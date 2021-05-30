@@ -3,7 +3,7 @@ import { Typography, Button } from '@material-ui/core';
 import { Elements, CardElement, ElementsConsumer } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
-import { setStatus, newPay } from '../apiPost';
+import { setStatus, payWithStripe, sendSellerEmail } from '../apiPost';
 import { isAuthenticated } from '../../auth';
 
 
@@ -28,6 +28,20 @@ const PaymentForm = ({ price, nextStep, pay, timeout, post }) => {
             setErrorMessage(data.error.message);
         } else {
             console.log(data.status);
+        }
+        });
+    };
+
+    const sendConfirmationEmail = () => {
+        const token = isAuthenticated().token;
+        const consumer = isAuthenticated().user;
+
+        sendSellerEmail(post._id, token, consumer).then(data => {
+        if (data.error) {
+            console.log(data.error.message);
+            setErrorMessage(data.error.message);
+        } else {
+            console.log(data.message);
         }
         });
     };
@@ -60,6 +74,9 @@ const PaymentForm = ({ price, nextStep, pay, timeout, post }) => {
                 // change status to "SOLD"
                 setPostStatus("SOLD");
                 
+                // send seller purchase email
+                sendConfirmationEmail();
+
                 // ui logic
                 pay();
                 timeout();
@@ -76,7 +93,7 @@ const PaymentForm = ({ price, nextStep, pay, timeout, post }) => {
         const cardElement = elements.getElement(CardElement);
 
         const token = isAuthenticated().token;  
-        newPay(post._id, isAuthenticated().user, post.postedBy, token).then(data => {
+        payWithStripe(post._id, isAuthenticated().user, post.postedBy, token).then(data => {
             if (data.error) {
                 console.log(data.error);
             } else {
