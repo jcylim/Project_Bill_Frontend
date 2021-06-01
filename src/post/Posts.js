@@ -38,19 +38,19 @@ class Posts extends Component {
                     const status = post.status;
 
                     return (
-                        <div className="card col-md-4" style={{width: "18rem"}} key={i}>
+                        <div className="card col-md-4" key={i}>
                             <img 
                                 src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}?${new Date().getTime()}`}
                                 onError={i => (i.target.src = `${DefaultPost}`)}
                                 alt={post.title} 
-                                style={{height: '200px', width: '100%'}}
+                                style={{height: '250px', width: '100%'}}
                                 className='img-thumbnail'
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{post.title}</h5>
-                                <h6 className="card-text" style={{color: 'green'}}>
+                                <h5 className="card-text" style={{color: 'green'}}>
                                     {`$${price}`}
-                                </h6>
+                                </h5>
                                 <p className="card-text">
                                     {post.body.substring(0, 100)}
                                 </p>
@@ -85,7 +85,7 @@ class Posts extends Component {
         let soldPosts = posts.filter(post => post.status === 'SOLD');
         
         return (
-            <div className="container">
+            <div>
                 <h2 className="mt-4 mb-4">
                     <b>{!posts.length ? 'No Posts Yet' : 'Recent Posts'}</b>
                 </h2>

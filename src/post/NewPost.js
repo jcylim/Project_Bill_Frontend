@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { isAuthenticated } from '../auth';
+import { checkOnboardStatus, onboardPayment } from '../user/apiUser';
 import { create } from './apiPost';
 import { Redirect } from 'react-router-dom';
 import Loading from '../Loading';
@@ -14,6 +15,7 @@ class NewPost extends Component {
             photo: '',
             fileSize: 0,
             user: {},
+            isStripeOnboarded: false,
             redirectToProfile: false,
             error: ''
         }
@@ -22,7 +24,33 @@ class NewPost extends Component {
     componentDidMount() {
         this.postData = new FormData();
         this.setState({ user: isAuthenticated().user });
+        this.checkIfOnboarded(isAuthenticated().user._id);
     }
+
+    setUpPayment = userId => {
+        const token = isAuthenticated().token;
+        onboardPayment(userId, token)
+        .then(data => {
+            if (data.error) {
+                this.setState({error: data.error});
+            } else {
+                window.location.href = data.url;
+            }
+        });
+    };
+
+    checkIfOnboarded = userId => {
+        const token = isAuthenticated().token;
+
+        checkOnboardStatus(userId, token)
+        .then(data => {
+            if (data.error) {
+                this.setState({error: data.error});
+            } else {
+                this.setState( { isStripeOnboarded: data.isOnboarded });
+            }
+        })
+    };
 
     isValid = () => {
         const { title, body, fileSize } = this.state;
@@ -82,7 +110,7 @@ class NewPost extends Component {
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Title</label>
+                <label className='text-muted'>Title<span style={{color: 'red'}}>*</span></label>
                 <input 
                     onChange={this.handlerChange('title')} 
                     type='text' 
@@ -92,7 +120,7 @@ class NewPost extends Component {
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Body</label>
+                <label className='text-muted'>Body<span style={{color: 'red'}}>*</span></label>
                 <textarea 
                     onChange={this.handlerChange('body')} 
                     type='text' 
@@ -126,6 +154,7 @@ class NewPost extends Component {
             price,
             user,
             redirectToProfile,
+            isStripeOnboarded,
             error,
             loading 
         } = this.state;
@@ -146,7 +175,16 @@ class NewPost extends Component {
 
                 <Loading loading={loading} />
 
-                { this.newPostForm(title, body, price) }
+                {!(isStripeOnboarded && user.stripeAccountId) ? (
+                    <button 
+                        onClick={() => this.setUpPayment(user._id)} 
+                        className="btn btn-lg btn-outline-secondary"
+                        >
+                            Set Up Payment
+                    </button>
+                ) : (
+                    this.newPostForm(title, body, price)
+                )}
             </div>
         );
     }
