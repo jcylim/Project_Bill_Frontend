@@ -143,23 +143,38 @@ class Profile extends Component {
                          isAuthenticated().user._id === user._id ? (
                             <>
                                 <div className="d-inline-block">
-                                    <Link className="btn btn-raised btn-info mr-5" to={'/post/create'}>
-                                        Create Post
-                                    </Link>
+                                    {isAuthenticated().user.type === "local food supplier" && (
+                                        <Link className="btn btn-raised btn-info mr-5" to={'/post/create'}>
+                                            Create Post
+                                        </Link>
+                                    )}
                                     <Link className="btn btn-raised btn-success mr-5" to={`/user/edit/${user._id}`}>
                                         Edit Profile
                                     </Link>
                                     <DeleteUser userId={user._id}/>
                                 </div>
-                                {!isStripeOnboarded && (
-                                    <div style={{ 'paddingTop': '20px', 'paddingLeft': '90px'}}>
+                                {!(isAuthenticated().user.stripeAccountId || isStripeOnboarded) ? (
+                                    <div style={{ 'paddingTop': '20px'}}>
                                         <button 
                                             onClick={() => this.setUpPayment(user._id)} 
-                                            className="btn btn-raised btn-outline-secondary ml-5"
+                                            className="btn btn-raised btn-outline-secondary"
                                             >
                                                 Set Up Payment
                                         </button>
                                     </div>
+                                ) : (
+                                    <>
+                                        {!isStripeOnboarded && (
+                                            <div style={{ 'paddingTop': '20px'}}>
+                                                <button 
+                                                    onClick={() => this.setUpPayment(user._id)} 
+                                                    className="btn btn-raised btn-outline-warning"
+                                                    >
+                                                        Complete Payment Onboarding
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </>
                         ) : (

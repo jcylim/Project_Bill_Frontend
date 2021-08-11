@@ -130,7 +130,7 @@ class NewPost extends Component {
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Price</label>
+                <label className='text-muted'>Price <span style={{color: 'red'}}>(fixed convenience fee of $1.23 per non-free transaction)</span></label>
                 <input 
                     onChange={this.handlerChange('price')} 
                     type='text' 
@@ -183,7 +183,16 @@ class NewPost extends Component {
                             Set Up Payment
                     </button>
                 ) : (
-                    this.newPostForm(title, body, price)
+                    <>
+                        {!isStripeOnboarded ? (
+                            <button 
+                                onClick={() => this.setUpPayment(user._id)} 
+                                className="btn btn-raised btn-outline-warning"
+                                >
+                                    Complete Payment Onboarding
+                            </button>
+                        ) : this.newPostForm(title, body, price)}
+                    </>
                 )}
             </div>
         );
