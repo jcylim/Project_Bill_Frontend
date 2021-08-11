@@ -121,11 +121,13 @@ class EditProfile extends Component {
     };
 
     onSelectStateChange = state => {
-        this.setState({ state });
+        this.userData.set("state", state);
+        this.setState({ ["state"]: state });
     };
 
     onSelectCountryChange = country => {
-        this.setState({ country });
+        this.userData.set("country", country);
+        this.setState({ ["country"]: country });
     };
 
     editForm = (first_name, last_name, email, password, street, city, phone) => {
