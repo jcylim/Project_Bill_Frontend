@@ -135,8 +135,9 @@ class Profile extends Component {
 
                     <div className="col-md-8">
                         <div className="lead mt-2">
-                            <p>Hello {user.first_name} {user.last_name}!</p>
-                            <p>Email: {user.email}</p>
+                            <p><b>Hello {user.first_name} {user.last_name}!</b></p>
+                            <p><b>Email:</b> {user.email}</p>
+                            <p><b>Address:</b> {user.address}</p>
                             <p>Joined since {new Date(user.created).toDateString()}</p>
                         </div>
                         {isAuthenticated().user && 
