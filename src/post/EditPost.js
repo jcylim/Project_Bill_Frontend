@@ -46,8 +46,8 @@ class EditPost extends Component {
 
     isValid = () => {
         const { title, body, fileSize } = this.state;
-        if (fileSize > 100000) {
-            this.setState({error: "File size should be less than 100KB", loading: false});
+        if (fileSize > 10000000) {
+            this.setState({error: "File size should be less than 10MB", loading: false});
             return false;
         }
         if (title.length === 0 || body.length === 0) {

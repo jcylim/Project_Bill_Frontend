@@ -153,7 +153,7 @@ class Profile extends Component {
                                     </Link>
                                     <DeleteUser userId={user._id}/>
                                 </div>
-                                {!(isAuthenticated().user.stripeAccountId || isStripeOnboarded) ? (
+                                {!isAuthenticated().user.stripeAccountId ? (
                                     <div style={{ 'paddingTop': '20px'}}>
                                         <button 
                                             onClick={() => this.setUpPayment(user._id)} 

@@ -54,8 +54,8 @@ class NewPost extends Component {
 
     isValid = () => {
         const { title, body, fileSize } = this.state;
-        if (fileSize > 100000) {
-            this.setState({error: "File size should be less than 100KB", loading: false});
+        if (fileSize > 10000000) {
+            this.setState({error: "File size should be less than 10MB", loading: false});
             return false;
         }
         if (title.length === 0 || body.length === 0) {
@@ -175,7 +175,7 @@ class NewPost extends Component {
 
                 <Loading loading={loading} />
 
-                {!(isStripeOnboarded && user.stripeAccountId) ? (
+                {!user.stripeAccountId ? (
                     <button 
                         onClick={() => this.setUpPayment(user._id)} 
                         className="btn btn-lg btn-outline-secondary"
@@ -187,7 +187,7 @@ class NewPost extends Component {
                         {!isStripeOnboarded ? (
                             <button 
                                 onClick={() => this.setUpPayment(user._id)} 
-                                className="btn btn-raised btn-outline-warning"
+                                className="btn btn-lg btn-outline-warning"
                                 >
                                     Complete Payment Onboarding
                             </button>
