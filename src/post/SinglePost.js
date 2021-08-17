@@ -217,36 +217,47 @@ class SinglePost extends Component {
                     <h3 className="card-text" style={{color: 'green'}}>
                         {`$${price}`}
                     </h3>  
-                    {isAuthenticated().user && !(isAuthenticated().user._id === userId) && isStripeOnboarded && (
-                        // <StripeCheckout 
-                        //     stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
-                        //     token={this.makePayment} 
-                        //     name="Buy Produce"
-                        //     amount={price * 100}
-                        // >
-                        //     <button className="btn btn-lg btn-outline-info">Pay ${price}</button>
-                        // </StripeCheckout>
-                        <Link 
-                            to={{
-                                pathname: `/post/pay/${post._id}`,
-                                state: { 
-                                    price: price,
-                                    post: post
-                                }
-                            }}
-                            className="btn btn-lg btn-outline-info"
-                        >
-                            Pay ${price}
-                        </Link>
-                    )}
-                    {isAuthenticated().user && !(isAuthenticated().user._id === userId) && !isStripeOnboarded && (
+
+                    {isAuthenticated().user && !(isAuthenticated().user._id === userId) && ( !isAuthenticated().user.stripeAccountId ? (
                         <button 
                             onClick={() => this.setUpPayment(isAuthenticated().user._id)} 
                             className="btn btn-lg btn-outline-secondary"
                             >
                                 Set Up Payment
                         </button>
-                    )}
+                    ) : (
+                        <>
+                            {!isStripeOnboarded ? (
+                                <button 
+                                    onClick={() => this.setUpPayment(isAuthenticated().user._id)} 
+                                    className="btn btn-lg btn-outline-warning"
+                                    >
+                                        Complete Payment Onboarding
+                                </button>
+                            ) : (
+                                // <StripeCheckout 
+                                //     stripeKey={process.env.REACT_APP_STRIPE_PUB_KEY}
+                                //     token={this.makePayment} 
+                                //     name="Buy Produce"
+                                //     amount={price * 100}
+                                // >
+                                //     <button className="btn btn-lg btn-outline-info">Pay ${price}</button>
+                                // </StripeCheckout>
+                                <Link 
+                                    to={{
+                                        pathname: `/post/pay/${post._id}`,
+                                        state: { 
+                                            price: price,
+                                            post: post
+                                        }
+                                    }}
+                                    className="btn btn-lg btn-outline-info"
+                                >
+                                    Pay ${price}
+                                </Link>
+                            )}
+                        </>
+                    ))}
                 </div>              
                 <p className="card-text mt-4">
                     {post.body}

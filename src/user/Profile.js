@@ -114,6 +114,8 @@ class Profile extends Component {
 
         const photoUrl = user._id ? `${process.env.REACT_APP_API_URL}/user/photo/${user._id}?${new Date().getTime()}` : DefaultProfile;
 
+        const isUser = isAuthenticated().user && isAuthenticated().user._id === user._id;
+
         return (
             <div className="container">
                 <div className='d-flex align-items-center mt-5 mb-5'>
@@ -135,13 +137,12 @@ class Profile extends Component {
 
                     <div className="col-md-8">
                         <div className="lead mt-2">
-                            <p><b>Hello {user.first_name} {user.last_name}!</b></p>
+                            {isUser && <p><b>Hello {user.first_name} {user.last_name}!</b></p>}
                             <p><b>Email:</b> {user.email}</p>
                             <p><b>Address:</b> {user.address}</p>
                             <p>Joined since {new Date(user.created).toDateString()}</p>
                         </div>
-                        {isAuthenticated().user && 
-                         isAuthenticated().user._id === user._id ? (
+                        {isUser ? (
                             <>
                                 <div className="d-inline-block">
                                     {isAuthenticated().user.type === "local food supplier" && (
