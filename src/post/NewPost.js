@@ -53,12 +53,12 @@ class NewPost extends Component {
     };
 
     isValid = () => {
-        const { title, body, fileSize } = this.state;
+        const { title, body, price, fileSize } = this.state;
         if (fileSize > 10000000) {
             this.setState({error: "File size should be less than 10MB", loading: false});
             return false;
         }
-        if (title.length === 0 || body.length === 0) {
+        if (title.length === 0 || body.length === 0 || price.length === 0) {
             this.setState({error: "All fields are required", loading: false});
             return false;
         }
@@ -82,7 +82,7 @@ class NewPost extends Component {
                         loading: false, 
                         title: '', 
                         body: '',
-                        price: 0,
+                        price: '',
                         redirectToProfile: true
                     });
                 }
@@ -126,17 +126,17 @@ class NewPost extends Component {
                     type='text' 
                     className='form-control'
                     value={body}
-                    placeholder='Brief description of the produce selling and pick-up/delivery details'
+                    placeholder='Brief description of the produce selling, quantity, and pick-up/delivery details'
                 />
             </div>
             <div className='form-group'>
-                <label className='text-muted'>Price <span style={{color: 'red'}}>(fixed convenience fee of $1.23 per non-free transaction)</span></label>
+                <label className='text-muted'>Price<span style={{color: 'red'}}>*</span> <span style={{color: 'red'}}>(fixed convenience fee of $1.23 per transaction)</span></label>
                 <input 
                     onChange={this.handlerChange('price')} 
                     type='text' 
                     className='form-control'
                     value={price}
-                    placeholder='Optional. Default price is $0'
+                    placeholder='e.g. 5, 6.5, 4.39'
                 />
             </div>
             <button 
