@@ -4,6 +4,9 @@ import { list } from './apiPost';
 import DefaultPost from '../img/postPic.jpg';
 import StatusBadge from './StatusBadge';
 
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+
+
 class Posts extends Component {
     constructor() {
         super();
@@ -39,7 +42,8 @@ class Posts extends Component {
 
                     return (
                         <div className="card col-md-4" key={i}>
-                            <img 
+                            <LazyLoadImage 
+                                effect="blur"
                                 src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}?${new Date().getTime()}`}
                                 onError={i => (i.target.src = `${DefaultPost}`)}
                                 alt={post.title} 
@@ -54,9 +58,18 @@ class Posts extends Component {
                                 <p className="card-text">
                                     {post.body.substring(0, 100)}
                                 </p>
-                                <div style={{'display': 'flex', 'justifyContent': 'flex-end', 'paddingBottom': '5px'}}>
-
-                                    <h4><StatusBadge status={status} /></h4>
+                                <div className='row justify-content-between'>
+                                    <div className='col-3'>
+                                        <h4><StatusBadge status={status} /></h4>
+                                    </div>
+                                    <div className='col-3'>
+                                        <h5 className='mb-5'>
+                                            <i 
+                                                className='fa fa-comment text-info'
+                                            />{' '}
+                                            {post.comments ? post.comments.length : 0}
+                                        </h5>
+                                    </div>
                                 </div>
                                 <p className='font-italic mark'>
                                     Posted by{' '} 
@@ -67,7 +80,7 @@ class Posts extends Component {
                                 </p>
                                 <Link 
                                     to={`/post/${post._id}`}
-                                    className="btn btn-raised btn-primary btn-sm"
+                                    className="btn btn-raised btn-primary btn-sm col align-self-center"
                                 >
                                     Read More
                                 </Link>
