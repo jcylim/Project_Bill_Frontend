@@ -12,6 +12,7 @@ class SignUp extends Component {
             last_name: '',
             email: '',
             password: '',
+            confirmPassword: '',
             type: '',
             street: '',
             city: '',
@@ -33,6 +34,16 @@ class SignUp extends Component {
         return true; 
     };
 
+    isPasswordConfirmed = () => {
+        const { password, confirmPassword } = this.state;
+        if (password !== confirmPassword) {
+            this.setState({error: "Passwords don't match", loading: false});
+            return false;
+        }
+        console.log("password checked");
+        return true; 
+    };
+
     clickSubmit = event => {
         event.preventDefault();
         const { first_name, last_name, email, password, type, street, city, state, country, phone} = this.state;
@@ -49,7 +60,7 @@ class SignUp extends Component {
             phone
         };
 
-        if (this.isAddressValid()) {
+        if (this.isAddressValid() && this.isPasswordConfirmed()) {
             signUp(user)
             .then(data => {
                 if (data.error) this.setState({error: data.error})
@@ -85,7 +96,7 @@ class SignUp extends Component {
         this.setState({ country });
     };
 
-    signUpForm = (first_name, last_name, email, password, street, city, phone) => {
+    signUpForm = (first_name, last_name, email, password, confirmPassword, street, city, phone) => {
         let types = [
             'Consumer',
             'Local Food Supplier'
@@ -135,6 +146,15 @@ class SignUp extends Component {
                         type='password' 
                         className='form-control'
                         value={password}
+                    />
+                </div>
+                <div className='form-group'>
+                    <label className='text'>Confirm Password<span style={{color: 'red'}}>*</span></label>
+                    <input 
+                        onChange={this.handleChange('confirmPassword')} 
+                        type='password' 
+                        className='form-control'
+                        value={confirmPassword}
                     />
                 </div>
                 <div className="form-group">
@@ -190,7 +210,7 @@ class SignUp extends Component {
     };
 
     render() {
-        const { first_name, last_name, email, password, street, city, phone, error, open } = this.state;
+        const { first_name, last_name, email, password, confirmPassword, street, city, phone, error, open } = this.state;
 
         return (
             <div className='container'>
@@ -209,7 +229,7 @@ class SignUp extends Component {
                     New account has been created successfully. Please{""} <Link to="/signin">sign in</Link>
                 </div>
 
-                { this.signUpForm(first_name, last_name, email, password, street, city, phone) }
+                { this.signUpForm(first_name, last_name, email, password, confirmPassword, street, city, phone) }
 
             </div>
         )

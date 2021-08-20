@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { listChefs, listFoodSuppliers } from './apiUser';
 import DefaultProfile from '../img/avatar.png';
 
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+
 class Sellers extends Component {
     constructor() {
         super();
@@ -63,11 +65,12 @@ class Sellers extends Component {
         <div className="row">
             {foodSuppliers.map((foodSupplier, i) => (
                     <div className="card col-md-4" key={i}>
-                        <img 
+                        <LazyLoadImage 
+                            effect="blur"
                             src={`${process.env.REACT_APP_API_URL}/user/photo/${foodSupplier._id}?${new Date().getTime()}`}
                             onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={foodSupplier.last_name} 
-                            style={{height: '300px', width: 'auto'}}
+                            alt={foodSupplier.last_name}
+                            style={{height: '350px', width: '100%'}}
                             className='img-thumbnail'
                         />
                         <div className="card-body">
