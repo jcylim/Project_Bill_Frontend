@@ -14,10 +14,10 @@ class SignUp extends Component {
             password: '',
             confirmPassword: '',
             type: '',
-            street: '',
-            city: '',
-            state: '',
-            country: '',
+            // street: '',
+            // city: '',
+            // state: '',
+            // country: '',
             phone: '',
             error: '',
             open: false
@@ -46,21 +46,17 @@ class SignUp extends Component {
 
     clickSubmit = event => {
         event.preventDefault();
-        const { first_name, last_name, email, password, type, street, city, state, country, phone} = this.state;
+        const { first_name, last_name, email, password, type, phone} = this.state;
         const user = {
             first_name,
             last_name,
             email,
             password,
             type,
-            street,
-            city,
-            state,
-            country,
             phone
         };
 
-        if (this.isAddressValid() && this.isPasswordConfirmed()) {
+        if (this.isPasswordConfirmed()) {
             signUp(user)
             .then(data => {
                 if (data.error) this.setState({error: data.error})
@@ -71,10 +67,6 @@ class SignUp extends Component {
                         email: '',
                         password: '',
                         type: '',
-                        street: '',
-                        city: '',
-                        state: '',
-                        country: '',
                         phone: '',
                         error: '',
                         open: true
@@ -88,15 +80,15 @@ class SignUp extends Component {
         this.setState({ [field]: event.target.value });
     };
 
-    onSelectStateChange = state => {
-        this.setState({ state });
-    };
+    // onSelectStateChange = state => {
+    //     this.setState({ state });
+    // };
 
-    onSelectCountryChange = country => {
-        this.setState({ country });
-    };
+    // onSelectCountryChange = country => {
+    //     this.setState({ country });
+    // };
 
-    signUpForm = (first_name, last_name, email, password, confirmPassword, street, city, phone) => {
+    signUpForm = (first_name, last_name, email, password, confirmPassword, phone) => {
         let types = [
             'Consumer',
             'Local Food Supplier'
@@ -157,7 +149,7 @@ class SignUp extends Component {
                         value={confirmPassword}
                     />
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                     <label for="inputAddress">Address<span style={{color: 'red'}}>*</span></label>
                     <input 
                         type="text"
@@ -181,7 +173,7 @@ class SignUp extends Component {
                     </div>
                     <StateDropdownMenu onSelectStateChange={this.onSelectStateChange} />
                     <CountryDropdownMenu onSelectCountryChange={this.onSelectCountryChange} />
-                </div>
+                </div> */}
                 <div className="form-group">
                     <label for="inputCell">Phone Number</label>
                     <input 
@@ -210,7 +202,7 @@ class SignUp extends Component {
     };
 
     render() {
-        const { first_name, last_name, email, password, confirmPassword, street, city, phone, error, open } = this.state;
+        const { first_name, last_name, email, password, confirmPassword, phone, error, open } = this.state;
 
         return (
             <div className='container'>
@@ -229,7 +221,7 @@ class SignUp extends Component {
                     New account has been created successfully. Please{""} <Link to="/signin">sign in</Link>
                 </div>
 
-                { this.signUpForm(first_name, last_name, email, password, confirmPassword, street, city, phone) }
+                { this.signUpForm(first_name, last_name, email, password, confirmPassword, phone) }
 
             </div>
         )

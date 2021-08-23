@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { isAuthenticated } from '../auth';
 import { checkOnboardStatus, onboardPayment } from '../user/apiUser';
 import { create } from './apiPost';
 import { Redirect } from 'react-router-dom';
 import Loading from '../Loading';
+
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
  
 class NewPost extends Component {
     constructor() {
@@ -12,6 +15,8 @@ class NewPost extends Component {
             title: '',
             body: '',
             price: '',
+            address: '',
+            coordinates: {lat: null, lng: null},
             photo: '',
             fileSize: 0,
             user: {},
@@ -47,7 +52,7 @@ class NewPost extends Component {
             if (data.error) {
                 this.setState({error: data.error});
             } else {
-                this.setState( { isStripeOnboarded: data.isOnboarded });
+                this.setState({ isStripeOnboarded: data.isOnboarded });
             }
         })
     };
@@ -59,7 +64,7 @@ class NewPost extends Component {
             return false;
         }
         if (title.length === 0 || body.length === 0 || price.length === 0) {
-            this.setState({error: "All fields are required", loading: false});
+            this.setState({error: "Title, body, and price fields are required", loading: false});
             return false;
         }
         return true; 
@@ -83,6 +88,8 @@ class NewPost extends Component {
                         title: '', 
                         body: '',
                         price: '',
+                        address: '',
+                        coordinates: {},
                         redirectToProfile: true
                     });
                 }
@@ -98,7 +105,25 @@ class NewPost extends Component {
         this.setState({ [field]: value, fileSize });
     };
 
-    newPostForm = (title, body, price) => (
+    onAddressChange = value => {
+        this.setState({ error: "" });
+        this.postData.set("address", value);
+        this.setState({ ["address"]: value });
+    };
+
+    onAddressSelect = async value => {
+        const results = await geocodeByAddress(value);
+        const latLng = await getLatLng(results[0]);
+
+        this.setState({ error: "" });
+        this.postData.set("lat", latLng.lat);
+        this.postData.set("lng", latLng.lng);
+        this.setState({ ["coordinates"]: latLng });
+
+        this.onAddressChange(value);
+    };
+
+    newPostForm = (title, body, price, address) => (
         <form>
             <div className='form-group'>
                 <label className='text-muted'>Post Photo</label>
@@ -139,6 +164,53 @@ class NewPost extends Component {
                     placeholder='e.g. 5, 6.5, 4.39'
                 />
             </div>
+            <div className='form-group'>
+                <label className='text-muted'>Pickup Location</label>
+                <PlacesAutocomplete
+                    value={address}
+                    onChange={this.onAddressChange}
+                    onSelect={this.onAddressSelect}
+                >
+                    {({ getInputProps, suggestions, getSuggestionItemProps, loading}) => (
+                        <>
+                            <input 
+                                {...getInputProps({
+                                    type: 'text', 
+                                    className: 'form-control',
+                                    placeholder: 'Enter pickup location...'
+                                })}
+                            />
+                            
+                            <div className="autocomplete-dropdown-container">
+                                {loading ? <div>...loading</div> : null}
+
+                                {suggestions.map(suggestion => {
+                                    const className = suggestion.active
+                                        ? 'suggestion-item--active'
+                                        : 'suggestion-item';
+                                    
+                                        // inline style for demonstration purpose
+                                    const style = suggestion.active
+                                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+
+                                    return (
+                                        <div
+                                            {...getSuggestionItemProps(suggestion, {
+                                                className,
+                                                style,
+                                            })}
+                                        >
+                                            <LocationOnIcon />
+                                            <span>{suggestion.description}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
+                </PlacesAutocomplete>
+            </div>
             <button 
                 onClick={this.clickSubmit}
                 className='btn btn-raised btn-primary'>
@@ -152,6 +224,7 @@ class NewPost extends Component {
             title, 
             body,
             price,
+            address,
             user,
             redirectToProfile,
             isStripeOnboarded,
@@ -191,7 +264,7 @@ class NewPost extends Component {
                                 >
                                     Complete Payment Onboarding
                             </button>
-                        ) : this.newPostForm(title, body, price)}
+                        ) : this.newPostForm(title, body, price, address)}
                     </>
                 )}
             </div>

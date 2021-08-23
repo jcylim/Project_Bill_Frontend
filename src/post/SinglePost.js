@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { singlePost, remove, like, unlike, setStatus, payWithStripe } from './apiPost';
 import { checkOnboardStatus, onboardPayment } from '../user/apiUser';
 import { isAuthenticated } from '../auth';
@@ -188,6 +189,11 @@ class SinglePost extends Component {
                     }}
                     className='img-thumbnail'
                 />
+                {post.address && (
+                    <h5>
+                        <b>Ready for pickup @:</b> {post.address.text}
+                    </h5>
+                )}
 
                 {/* {like ? (
                     <h3 onClick={this.likeToggle} className='mt-3'>
@@ -316,7 +322,7 @@ class SinglePost extends Component {
             
                 {loading ? (
                     <div className="jumbotron text-center">
-                        <h2>Loading...</h2>
+                        <Skeleton />
                     </div>
                 ) : (
                     this.renderPost(post)
