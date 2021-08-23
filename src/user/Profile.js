@@ -139,7 +139,8 @@ class Profile extends Component {
                         <div className="lead mt-2">
                             {isUser && <p><b>Hello {user.first_name} {user.last_name}!</b></p>}
                             <p><b>Email:</b> {user.email}</p>
-                            <p><b>Address:</b> {user.address}</p>
+                            {user.phone && (<p><b>Phone:</b> {user.phone}</p>)}
+                            {user.address && (<p><b>Address:</b> {user.address}</p>)}
                             <p>Joined since {new Date(user.created).toDateString()}</p>
                         </div>
                         {isUser ? (
