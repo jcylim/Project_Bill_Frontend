@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Home from './core/Home';
+import PickUpLocation from './post/PickupLocation/PickupLocation';
 import Menu from './core/Menu';
 import SignUp from './user/SignUp';
 import SignIn from './user/SignIn';
@@ -22,6 +23,7 @@ const MainRouter = () => (
         <Menu />
         <Switch>
             <Route exact path='/' component={Home} />
+            <Route exact path='/locations' component={PickUpLocation} />
             <Route exact path="/forgot-password" component={ForgotPassword} />
             <Route exact path="/reset-password/:resetPasswordToken" component={ResetPassword}
             />
